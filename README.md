@@ -33,7 +33,7 @@ end
 ```
 </details>
 
-![SAP Commerce SSR](doc/img/SAP Commerce SSR.png "SAP Commerce SSR")
+![SAP Commerce SSR](./doc/img/SAP%20Commerce%20SSR.png "SAP Commerce SSR")
 
 ## Expected behavior
 ### HIT Scenario
@@ -79,7 +79,7 @@ end
 ```
 </details>
 
-![SAP Commerce SSR Strategy HIT](doc/img/SAP Commerce SSR Strategy HIT.png "SAP Commerce SSR Strategy HIT")
+![SAP Commerce SSR Strategy HIT](doc/img/SAP%20Commerce%20SSR%20Strategy%20HIT.png "SAP Commerce SSR Strategy HIT")
 
 
 ### MISS Scenario
@@ -142,7 +142,7 @@ end
 ```
 </details>
 
-![SAP Commerce SSR Strategy NO HIT](doc/img/SAP Commerce SSR Strategy NO HIT.png "SAP Commerce SSR Strategy NO HIT")
+![SAP Commerce SSR Strategy NO HIT](doc/img/SAP%20Commerce%20SSR%20Strategy%20NO%20HIT.png "SAP Commerce SSR Strategy NO HIT")
 
 # Nomenclature
 
