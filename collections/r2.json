@@ -1,0 +1,768 @@
+{
+	"info": {
+		"_postman_id": "c2d8e7a9-a1aa-4218-a321-a424d0363ed7",
+		"name": "Cloudflare R2",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Buckets",
+			"item": [
+				{
+					"name": "Location",
+					"item": [
+						{
+							"name": "GetBucketLocation",
+							"_postman_id": "04397251-8746-4fad-97b9-e4bcd3bfcd66",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-amz-content-sha256",
+										"value": "UNSIGNED-PAYLOAD",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://{{account-id}}.r2.cloudflarestorage.com/{{r2-bucket}}?location",
+									"protocol": "https",
+									"host": [
+										"{{account-id}}",
+										"r2",
+										"cloudflarestorage",
+										"com"
+									],
+									"path": [
+										"{{r2-bucket}}"
+									],
+									"query": [
+										{
+											"key": "location",
+											"value": null
+										}
+									]
+								},
+								"description": "Returns the region the bucket resides in. You set the bucket's region using the LocationConstraint request parameter in a CreateBucket request. For more information, see CreateBucket. "
+							},
+							"response": []
+						}
+					],
+					"_postman_id": "fcb8055f-2c85-4053-b32b-2ec1dbefc2f3",
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "HeadBucket",
+					"_postman_id": "437b96fd-3d14-422d-8c29-0813d632acf7",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "HEAD",
+						"header": [
+							{
+								"key": "",
+								"type": "text",
+								"value": "",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {}
+						},
+						"url": "https://{{account-id}}.r2.cloudflarestorage.com/{{r2-bucket}}"
+					},
+					"response": []
+				},
+				{
+					"name": "ListBuckets",
+					"_postman_id": "407c247c-d8cc-4d36-8418-0fb10ccf4a1c",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-amz-content-sha256",
+								"type": "text",
+								"value": "UNSIGNED-PAYLOAD",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {}
+						},
+						"url": "https://{{account-id}}.r2.cloudflarestorage.com",
+						"description": "Returns a list of all buckets owned by the authenticated sender of the request."
+					},
+					"response": []
+				},
+				{
+					"name": "CreateBucket",
+					"_postman_id": "de47b51b-5821-45fc-b128-0a7805960b80",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "x-amz-content-sha256",
+								"type": "text",
+								"value": "UNSIGNED-PAYLOAD",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {}
+						},
+						"url": "https://{{account-id}}.r2.cloudflarestorage.com/{{r2-bucket}}",
+						"description": "Creates a new bucket."
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteBucket",
+					"_postman_id": "349c62db-e1bb-432b-ba2d-310ebea818ca",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-amz-content-sha256",
+								"type": "text",
+								"value": "UNSIGNED-PAYLOAD",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {}
+						},
+						"url": "https://{{account-id}}.r2.cloudflarestorage.com/{{r2-bucket}}",
+						"description": "Deletes the bucket. All objects (including unfinished multipart uploads) in the bucket must be deleted before the bucket itself can be deleted."
+					},
+					"response": []
+				}
+			],
+			"_postman_id": "24861936-9cd0-4c8b-a427-5f2750f24dd6"
+		},
+		{
+			"name": "Objects",
+			"item": [
+				{
+					"name": "Upload",
+					"item": [
+						{
+							"name": "Multipart",
+							"item": [
+								{
+									"name": "CreateMultipartUpload",
+									"_postman_id": "964b2e54-14f7-49b4-8207-14bdf978d575",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "x-amz-content-sha256",
+												"type": "text",
+												"value": "UNSIGNED-PAYLOAD"
+											},
+											{
+												"key": "Content-Type",
+												"name": "Content-Type",
+												"value": "application/x-www-form-urlencoded",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "file",
+											"file": {
+												"src": "/Users/kinlane/Downloads/APImetrics-monitoring-home-page.png"
+											},
+											"options": {}
+										},
+										"url": {
+											"raw": "https://{{account-id}}.r2.cloudflarestorage.com/{{r2-bucket}}/{{r2-object}}?uploads",
+											"protocol": "https",
+											"host": [
+												"{{account-id}}",
+												"r2",
+												"cloudflarestorage",
+												"com"
+											],
+											"path": [
+												"{{r2-bucket}}",
+												"{{r2-object}}"
+											],
+											"query": [
+												{
+													"key": "uploads",
+													"value": null
+												}
+											]
+										},
+										"description": "This operation initiates a multipart upload and returns an upload ID. This upload ID is used to associate all of the parts in the specific multipart upload. You specify this upload ID in each of your subsequent upload part requests (see UploadPart). You also include this upload ID in the final request to either complete or abort the multipart upload request. "
+									},
+									"response": []
+								},
+								{
+									"name": "CompleteMultipartUpload",
+									"_postman_id": "72aa42ac-d7c2-45c8-8909-add993497e0e",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "x-amz-content-sha256",
+												"type": "text",
+												"value": "UNSIGNED-PAYLOAD"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CompleteMultipartUpload xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\">\n   <Part>\n      <ETag>string</ETag>\n      <PartNumber>integer</PartNumber>\n   </Part>\n</CompleteMultipartUpload>",
+											"options": {}
+										},
+										"url": {
+											"raw": "https://{{account-id}}.r2.cloudflarestorage.com/{{r2-bucket}}/{{r2-object}}?uploadId={{upload-id}}",
+											"protocol": "https",
+											"host": [
+												"{{account-id}}",
+												"r2",
+												"cloudflarestorage",
+												"com"
+											],
+											"path": [
+												"{{r2-bucket}}",
+												"{{r2-object}}"
+											],
+											"query": [
+												{
+													"key": "uploadId",
+													"value": "{{upload-id}}"
+												}
+											]
+										},
+										"description": "Completes a multipart upload by assembling previously uploaded parts."
+									},
+									"response": []
+								},
+								{
+									"name": "UploadPart",
+									"_postman_id": "5eb0d40c-73b7-4a36-9423-1ae4463b707e",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "x-amz-content-sha256",
+												"type": "text",
+												"value": "UNSIGNED-PAYLOAD"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CompleteMultipartUpload xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\">\n   <Part>\n      <ETag>string</ETag>\n      <PartNumber>integer</PartNumber>\n   </Part>\n</CompleteMultipartUpload>",
+											"options": {}
+										},
+										"url": {
+											"raw": "https://{{account-id}}.r2.cloudflarestorage.com/{{r2-bucket}}/{{r2-object}}?uploadId={{upload-id}}",
+											"protocol": "https",
+											"host": [
+												"{{account-id}}",
+												"r2",
+												"cloudflarestorage",
+												"com"
+											],
+											"path": [
+												"{{r2-bucket}}",
+												"{{r2-object}}"
+											],
+											"query": [
+												{
+													"key": "uploadId",
+													"value": "{{upload-id}}"
+												}
+											]
+										},
+										"description": "Uploads a part in a multipart upload. You must initiate a multipart upload (see CreateMultipartUpload) before you can upload individual parts, and include the multipart upload ID in each upload part request."
+									},
+									"response": []
+								},
+								{
+									"name": "UploadPartCopy",
+									"_postman_id": "25fdca35-671a-482f-bc01-b4f9752ace13",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "x-amz-content-sha256",
+												"type": "text",
+												"value": "UNSIGNED-PAYLOAD"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CompleteMultipartUpload xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\">\n   <Part>\n      <ETag>string</ETag>\n      <PartNumber>integer</PartNumber>\n   </Part>\n</CompleteMultipartUpload>",
+											"options": {}
+										},
+										"url": {
+											"raw": "https://{{account-id}}.r2.cloudflarestorage.com/{{r2-bucket}}/{{r2-object}}?uploadId={{upload-id}}&partNumber={{part-number}}",
+											"protocol": "https",
+											"host": [
+												"{{account-id}}",
+												"r2",
+												"cloudflarestorage",
+												"com"
+											],
+											"path": [
+												"{{r2-bucket}}",
+												"{{r2-object}}"
+											],
+											"query": [
+												{
+													"key": "uploadId",
+													"value": "{{upload-id}}"
+												},
+												{
+													"key": "partNumber",
+													"value": "{{part-number}}"
+												}
+											]
+										},
+										"description": "Uploads a part by copying data from an existing object as data source. You specify the data source by adding the request header `x-amz-copy-source` in your request and a byte range by adding the request header `x-amz-copy-source-range` in your request.\n\nYou must initiate a multipart upload (see CreateMultipartUpload) before you can upload individual parts, and include the multipart upload ID in each upload part request."
+									},
+									"response": []
+								},
+								{
+									"name": "AbortMultipartUpload",
+									"_postman_id": "2ffbc10f-fd92-4706-8a88-83b5aa03fa2f",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "x-amz-content-sha256",
+												"type": "text",
+												"value": "UNSIGNED-PAYLOAD"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CompleteMultipartUpload xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\">\n   <Part>\n      <ETag>string</ETag>\n      <PartNumber>integer</PartNumber>\n   </Part>\n</CompleteMultipartUpload>",
+											"options": {}
+										},
+										"url": {
+											"raw": "https://{{account-id}}.r2.cloudflarestorage.com/{{r2-bucket}}/{{r2-object}}?uploadId={{upload-id}}",
+											"protocol": "https",
+											"host": [
+												"{{account-id}}",
+												"r2",
+												"cloudflarestorage",
+												"com"
+											],
+											"path": [
+												"{{r2-bucket}}",
+												"{{r2-object}}"
+											],
+											"query": [
+												{
+													"key": "uploadId",
+													"value": "{{upload-id}}"
+												}
+											]
+										},
+										"description": "Completes a multipart upload by assembling previously uploaded parts."
+									},
+									"response": []
+								}
+							],
+							"_postman_id": "7ae9e26d-8f2e-46a6-856a-4d0f9d3b1d11",
+							"_postman_isSubFolder": true
+						},
+						{
+							"name": "PutObject",
+							"_postman_id": "318704b1-c51e-4f4a-a910-5b7bc8b59a7b",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "x-amz-content-sha256",
+										"type": "text",
+										"value": "UNSIGNED-PAYLOAD"
+									}
+								],
+								"body": {
+									"mode": "file",
+									"file": {
+										"src": "GPeeGZTRk/cat-pic.jpg"
+									},
+									"options": {}
+								},
+								"url": "https://{{account-id}}.r2.cloudflarestorage.com/{{r2-bucket}}/{{r2-object}}",
+								"description": "Completes a multipart upload by assembling previously uploaded parts."
+							},
+							"response": []
+						}
+					],
+					"_postman_id": "18885e63-6839-449a-b926-33c99ba6330f",
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "HeadObject",
+					"_postman_id": "66b0bfc1-f981-41d5-a6be-1a3ec78cc7b5",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "HEAD",
+						"header": [
+							{
+								"key": "x-amz-content-sha256",
+								"value": "UNSIGNED-PAYLOAD",
+								"type": "text"
+							}
+						],
+						"url": "https://{{account-id}}.r2.cloudflarestorage.com/{{r2-bucket}}/{{r2-object}}",
+						"description": "The HEAD operation retrieves metadata from an object without returning the object itself. This operation is useful if you're only interested in an object's metadata."
+					},
+					"response": []
+				},
+				{
+					"name": "ListObjectV1",
+					"_postman_id": "b1fd8770-f696-4b71-b0ae-1d033098c4b6",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-amz-content-sha256",
+								"type": "text",
+								"value": "UNSIGNED-PAYLOAD"
+							},
+							{
+								"key": "Accept-Encoding",
+								"value": "application/json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "https://{{account-id}}.r2.cloudflarestorage.com/{{r2-bucket}}",
+							"protocol": "https",
+							"host": [
+								"{{account-id}}",
+								"r2",
+								"cloudflarestorage",
+								"com"
+							],
+							"path": [
+								"{{r2-bucket}}"
+							],
+							"query": [
+								{
+									"key": "delimiter",
+									"value": "{{delimiter}}",
+									"disabled": true
+								},
+								{
+									"key": "encoding-type",
+									"value": "{{encoding-type}}",
+									"disabled": true
+								},
+								{
+									"key": "marker",
+									"value": "{{marker}}",
+									"disabled": true
+								},
+								{
+									"key": "max-keys",
+									"value": "{{max-keys}}",
+									"disabled": true
+								},
+								{
+									"key": "prefix",
+									"value": "{{prefix}}",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Returns some or all (up to 1000) of the objects in a bucket. You can use the request parameters as selection criteria to return a subset of the objects in a bucket."
+					},
+					"response": []
+				},
+				{
+					"name": "ListObjectV2",
+					"_postman_id": "60e46981-c98a-4c97-88de-14a2ab9ea8ac",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-amz-content-sha256",
+								"type": "text",
+								"value": "UNSIGNED-PAYLOAD"
+							}
+						],
+						"url": {
+							"raw": "https://{{account-id}}.r2.cloudflarestorage.com/{{r2-bucket}}",
+							"protocol": "https",
+							"host": [
+								"{{account-id}}",
+								"r2",
+								"cloudflarestorage",
+								"com"
+							],
+							"path": [
+								"{{r2-bucket}}"
+							],
+							"query": [
+								{
+									"key": "list-type",
+									"value": "2",
+									"disabled": true
+								},
+								{
+									"key": "continuation-token",
+									"value": "{{continuation-token}}",
+									"disabled": true
+								},
+								{
+									"key": "delimiter",
+									"value": "{{delimiter}}",
+									"disabled": true
+								},
+								{
+									"key": "encoding-type",
+									"value": "{{encoding-type}}",
+									"disabled": true
+								},
+								{
+									"key": "max-keys",
+									"value": "{{max-keys}}",
+									"disabled": true
+								},
+								{
+									"key": "prefix",
+									"value": "{{prefix}}",
+									"disabled": true
+								},
+								{
+									"key": "start-after",
+									"value": "{{start-after}}",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Returns some or all (up to 1000) of the objects in a bucket. You can use the request parameters as selection criteria to return a subset of the objects in a bucket."
+					},
+					"response": []
+				},
+				{
+					"name": "GetObject",
+					"_postman_id": "7d01e544-a9e8-4d59-b1c3-7526d01c4c7e",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-amz-content-sha256",
+								"type": "text",
+								"value": "UNSIGNED-PAYLOAD"
+							}
+						],
+						"url": "https://{{account-id}}.r2.cloudflarestorage.com/{{r2-bucket}}/{{r2-object}}",
+						"description": "Returns some or all (up to 1000) of the objects in a bucket. You can use the request parameters as selection criteria to return a subset of the objects in a bucket."
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteObject",
+					"_postman_id": "d382339e-87f5-41ab-aaf2-a838562e9557",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-amz-content-sha256",
+								"type": "text",
+								"value": "UNSIGNED-PAYLOAD"
+							}
+						],
+						"url": "https://{{account-id}}.r2.cloudflarestorage.com/{{r2-bucket}}/{{r2-object}}",
+						"description": "Delete an object from a bucket."
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteObjects",
+					"_postman_id": "5523b057-738f-46eb-83c2-1538f0b08cc9",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-amz-content-sha256",
+								"type": "text",
+								"value": "UNSIGNED-PAYLOAD"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Delete xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\">\n   <Object>\n      <Key>string</Key>\n      <VersionId>string</VersionId>\n   </Object>\n   ...\n   <Quiet>boolean</Quiet>\n</Delete>",
+							"options": {}
+						},
+						"url": {
+							"raw": "https://{{account-id}}.r2.cloudflarestorage.com/{{r2-bucket}}/?delete=",
+							"protocol": "https",
+							"host": [
+								"{{account-id}}",
+								"r2",
+								"cloudflarestorage",
+								"com"
+							],
+							"path": [
+								"{{r2-bucket}}",
+								""
+							],
+							"query": [
+								{
+									"key": "delete",
+									"value": ""
+								}
+							]
+						},
+						"description": "Delete multiple objects from a bucket in a single request."
+					},
+					"response": []
+				},
+				{
+					"name": "CopyObject",
+					"_postman_id": "1cac7eb7-23aa-4fe7-8e59-52bf8ce9e2ff",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "text/javascript",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "est\t",
+							"options": {}
+						},
+						"url": "https://{{account-id}}.r2.cloudflarestorage.com/{{r2-bucket}}/{{r2-object}}",
+						"description": "Creates a copy of an object that is already stored in Amazon S3."
+					},
+					"response": []
+				}
+			],
+			"_postman_id": "acc9f8cd-8985-45f1-b7e2-51461a3bb25d"
+		}
+	],
+	"auth": {
+		"type": "awsv4",
+		"awsv4": {
+			"secretKey": "{{r2-secret-access-key}}",
+			"accessKey": "{{r2-access-key-id}}",
+			"service": "s3",
+			"region": "auto"
+		}
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				],
+				"id": "1da38e6c-551b-4f66-a39c-85ac00024157"
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				],
+				"id": "54717015-32a3-4e3b-bf63-d5246607340e"
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "ddfe3117-67bf-417b-8850-35b6323468ab",
+			"key": "account-id",
+			"value": "<account-id>",
+			"type": "string"
+		},
+		{
+			"id": "6243ea22-0a19-4af9-a849-4b5c6e3603a9",
+			"key": "r2-access-key-id",
+			"value": "<r2-access-key-id>",
+			"type": "string"
+		},
+		{
+			"id": "cc81084d-ff3b-4f19-97fd-693c831e3456",
+			"key": "r2-secret-access-key",
+			"value": "<r2-secret-access-key>",
+			"type": "string"
+		},
+		{
+			"id": "c17e9fe8-fd95-414d-ae14-3eaa20f8ea7d",
+			"key": "r2-bucket",
+			"value": "<r2-bucket>",
+			"type": "string"
+		},
+		{
+			"id": "f8ed1871-3602-451f-9714-d80a614b380d",
+			"key": "r2-object",
+			"value": "<r2-object>",
+			"type": "string"
+		}
+	]
+}
