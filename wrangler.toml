@@ -74,7 +74,7 @@ R2_PREFIX = "001"
 name = "s1-www-ssr-cache-r2"
 routes = ["s1-www.wowconcept.com/es", "s1-www.wowconcept.com/es/*"]
 analytics_engine_datasets = [
-    { binding = "SSR_CACHE", dataset = "ssr_cache_s1" }
+    { binding = "SSR_CACHE", dataset = "ssr_cache_s1_v1" }
 ]
 
 [[env.wow-s1.r2_buckets]]
@@ -95,7 +95,7 @@ R2_PREFIX = "001"
 name = "p1-www-ssr-cache-r2"
 routes = ["wowconcept.com/es/product/LAC2SNE33734PCM001/test-ssr*"]
 analytics_engine_datasets = [
-    { binding = "SSR_CACHE", dataset = "ssr_cache_p1" }
+    { binding = "SSR_CACHE", dataset = "ssr_cache_p1_v1" }
 ]
 
 [[env.wow-p1.r2_buckets]]

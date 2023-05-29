@@ -157,6 +157,7 @@ export abstract class AbstractHandler implements Handler {
                 requestCtx.request.url,
                 responseCtx?.renderingMode,
                 responseCtx?.response.headers.get('cf-cache-status'),
+                responseCtx?.response.headers.get('x-debug-ssr-source'),
                 city,
                 region,
                 country,
