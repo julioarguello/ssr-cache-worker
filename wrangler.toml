@@ -7,11 +7,11 @@ workers_dev = true
 [placement]
 mode = "smart"
 
-[env.d1]
+[env.ohg-d1]
 name = "d1-www-ssr-cache"
 routes = ["d1-www.ohgar.com/es/test", "d1-www.ohgar.com/es/test*"]
 
-[env.d1.vars]
+[env.ohg-d1.vars]
 ORIGIN_HOST = "d1-www.ohgar.com"
 ORIGIN_PROTOCOL = "https"
 ORIGIN_PORT = "443"
@@ -19,11 +19,11 @@ FORCED_EDGE_CACHE_CONTROL = "public, max-age=14400"
 TRACKING_PARAMS = "gclid,gclsrc,fbclid,utm_source,utm_medium,utm_campaign,utm_content"
 SSR_RETRIES = "4000,6000,10000"
 
-[env.s1]
+[env.ohg-s1]
 name = "s1-www-ssr-cache"
 routes = ["s1-www.ohgar.com/es/test", "s1-www.ohgar.com/es/test/*"]
 
-[env.s1.vars]
+[env.ohg-s1.vars]
 ORIGIN_HOST = "s1-www.ohgar.com"
 ORIGIN_PROTOCOL = "https"
 ORIGIN_PORT = "443"
@@ -31,7 +31,7 @@ FORCED_EDGE_CACHE_CONTROL = "public, max-age=28800"
 TRACKING_PARAMS = "gclid,gclsrc,fbclid,utm_source,utm_medium,utm_campaign,utm_content"
 SSR_RETRIES = "4000,6000,10000"
 
-[env.p1]
+[env.ohg-p1]
 name = "p1-www-ssr-cache"
 routes = ["www.ohgar.com/es/c/test-ssr-cache*"]
 analytics_engine_datasets = [
@@ -41,7 +41,7 @@ analytics_engine_datasets = [
 #    { binding = "SSR_BUCKET", bucket_name = "ssr_cache_p1" }
 #]
 
-[env.p1.vars]
+[env.ohg-p1.vars]
 ORIGIN_HOST = "www.ohgar.com"
 ORIGIN_PROTOCOL = "https"
 ORIGIN_PORT = "443"
@@ -49,19 +49,19 @@ FORCED_EDGE_CACHE_CONTROL = "public, max-age=28800"
 TRACKING_PARAMS = "gclid,gclsrc,fbclid,utm_source,utm_medium,utm_campaign,utm_content"
 SSR_RETRIES = "2000,2000,2000,2000"
 
-[env.fs]
+[env.fs-s1]
 name = "p1-www-ssr-cache"
 routes = ["https://cdn.forumsport.com/es-es/nutricion-y-salud/productos/complementos-nutricionales-NU033-c*"]
 analytics_engine_datasets = [
     { binding = "SSR_CACHE", dataset = "ssr_cache_p1" }
 ]
 
-[[env.fs.r2_buckets]]
+[[env.fs-s1.r2_buckets]]
 binding = "R2_BUCKET"
 bucket_name = "ssr"         # Set this to your R2 bucket name. Required
 preview_bucket_name = "ssr" # Set this to your preview R2 bucket name. Can be equal to bucket_name. Optional
 
-[env.fs.vars]
+[env.fs-s1.vars]
 ORIGIN_HOST = "www.forumsport.com"
 ORIGIN_PROTOCOL = "https"
 ORIGIN_PORT = "443"
@@ -70,19 +70,40 @@ TRACKING_PARAMS = "gclid,gclsrc,fbclid,utm_source,utm_medium,utm_campaign,utm_co
 SSR_RETRIES = "2000,2000,2000,2000"
 R2_PREFIX = "001"
 
-[env.wow]
+[env.wow-s1]
+name = "s1-www-ssr-cache-r2"
+routes = ["s1-www.wowconcept.com/es", "s1-www.wowconcept.com/es/*"]
+analytics_engine_datasets = [
+    { binding = "SSR_CACHE", dataset = "ssr_cache_s1" }
+]
+
+[[env.wow-s1.r2_buckets]]
+binding = "R2_BUCKET"
+bucket_name = "ssr"         # Set this to your R2 bucket name. Required
+preview_bucket_name = "ssr" # Set this to your preview R2 bucket name. Can be equal to bucket_name. Optional
+
+[env.wow-s1.vars]
+ORIGIN_HOST = "s1-www.wowconcept.com"
+ORIGIN_PROTOCOL = "https"
+ORIGIN_PORT = "443"
+FORCED_EDGE_CACHE_CONTROL = "public, max-age=28800"
+TRACKING_PARAMS = "gclid,gclsrc,fbclid,utm_source,utm_medium,utm_campaign,utm_content"
+SSR_RETRIES = "7000,10000,10000,20000"
+R2_PREFIX = "001"
+
+[env.wow-p1]
 name = "p1-www-ssr-cache-r2"
 routes = ["wowconcept.com/es/product/LAC2SNE33734PCM001/test-ssr*"]
 analytics_engine_datasets = [
     { binding = "SSR_CACHE", dataset = "ssr_cache_p1" }
 ]
 
-[[env.wow.r2_buckets]]
+[[env.wow-p1.r2_buckets]]
 binding = "R2_BUCKET"
 bucket_name = "ssr"         # Set this to your R2 bucket name. Required
 preview_bucket_name = "ssr" # Set this to your preview R2 bucket name. Can be equal to bucket_name. Optional
 
-[env.wow.vars]
+[env.wow-p1.vars]
 ORIGIN_HOST = "wowconcept.com"
 ORIGIN_PROTOCOL = "https"
 ORIGIN_PORT = "443"
