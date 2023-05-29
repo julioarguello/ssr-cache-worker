@@ -1,0 +1,122 @@
+{
+	"info": {
+		"_postman_id": "8d8f874c-7a6a-4ac1-a354-d9d76022f838",
+		"name": "SSR Cache Analytics",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Hello World",
+			"id": "4753ed5f-8f3b-4285-b500-2af1b0047b69",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "SELECT 'Hello Workers Analytics Engine' AS message\nFORMAT TabSeparated"
+				},
+				"url": "{{baseUrl}}/client/v4/accounts/{{accountId}}/analytics_engine/sql"
+			},
+			"response": []
+		},
+		{
+			"name": "SHOW Tables",
+			"id": "a791a616-1a43-42b7-8707-111000f00fd2",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "SHOW Tables\nFORMAT JSON"
+				},
+				"url": "{{baseUrl}}/client/v4/accounts/{{accountId}}/analytics_engine/sql"
+			},
+			"response": []
+		},
+		{
+			"name": "Select Last Day Records",
+			"id": "8323619b-b4e1-41fa-a386-c0a55c6fdb8a",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "SELECT\n    timestamp,\n    index1 as handler,\n    blob1 AS cf_ray,\n    blob2 AS url,\n    blob3 AS rendering_mode,\n    blob4 AS cf_cache_status,\n    blob5 AS cf_cache_source,\n    blob6 AS city,\n    blob7 AS region,\n    blob8 AS country,\n    blob9 AS colo,\n    double1 AS attempt,\n    double2 AS duration\nFROM {{datasetId}}\nWHERE timestamp > NOW() - INTERVAL '1' DAY\nORDER BY timestamp DESC\nFORMAT JSONEachRow"
+				},
+				"url": "{{baseUrl}}/client/v4/accounts/{{accountId}}/analytics_engine/sql"
+			},
+			"response": []
+		},
+		{
+			"name": "Stats by interval",
+			"id": "6599f596-a38b-46c2-92bd-55102a89118a",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "SELECT\n    intDiv(toUInt32(timestamp), 300) * 300 AS t, \n    index1 as handler,    \n    blob4 AS cf_cache_status,\n    SUM(_sample_interval * double2) / SUM(_sample_interval) AS avg_duration\nFROM {{datasetId}}\nWHERE timestamp > NOW() - INTERVAL '1' DAY\nGROUP BY t, handler, cf_cache_status\nORDER BY t, handler, cf_cache_status\nFORMAT JSONEachRow"
+				},
+				"url": "{{baseUrl}}/client/v4/accounts/{{accountId}}/analytics_engine/sql"
+			},
+			"response": []
+		},
+		{
+			"name": "Stats global",
+			"id": "d489b94c-44e9-45c8-a088-c97e649560c6",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "SELECT    \n    index1 as handler,    \n    blob4 AS cf_cache_status,\n    blob5 AS cf_cache_source,\n    SUM(_sample_interval * double2) / SUM(_sample_interval) AS avg_duration,\n    COUNT() AS count_ray\nFROM {{datasetId}}\nWHERE timestamp > NOW() - INTERVAL '1' DAY\nGROUP BY handler, cf_cache_status, cf_cache_source\nORDER BY handler, cf_cache_status, cf_cache_source\nFORMAT JSONEachRow"
+				},
+				"url": "{{baseUrl}}/client/v4/accounts/{{accountId}}/analytics_engine/sql"
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": {
+			"token": "{{token}}"
+		}
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "01270959-6bd7-486c-a2b3-e337f4907c22",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "e6e2fddc-8e05-4dcf-b03d-999dd3371190",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
