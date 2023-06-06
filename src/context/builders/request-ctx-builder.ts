@@ -1,5 +1,5 @@
 import {RequestCtx} from '../beans/request-ctx';
-import {DEFAULTS, Env} from "../../env";
+import {DEFAULTS, Env} from "../../common/env";
 
 /**
  * Builds request contexts from a http request.

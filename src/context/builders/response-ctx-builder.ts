@@ -13,7 +13,7 @@ export class ResponseCtxBuilder {
     startTime: Date;
     endTime: Date;
     duration: number;
-    private requestContext: RequestCtx;
+    private readonly requestContext: RequestCtx;
 
     /**
      * Constructs a `ResponseContextBuilder` given the associated request context and http response.
@@ -47,7 +47,7 @@ export class ResponseCtxBuilder {
      */
     setRenderingMode() {
         const url = new URL(this.requestContext.request.url);
-        const cacheControl = url.searchParams.get('cdn-cache-control') || this.response.headers.get('cdn-cache-control')  || 'no-store';
+        const cacheControl = url.searchParams.get('cdn-cache-control') || this.response.headers.get('cdn-cache-control') || 'no-store';
         const csr = cacheControl.indexOf('no-store') > -1;
         const ssr = !csr && this.response.ok;
 

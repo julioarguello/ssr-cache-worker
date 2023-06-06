@@ -4,6 +4,7 @@ import {AbstractHandler} from "./abstract-handler";
 import {L1Handler} from "./l1-handler";
 import {L2Handler} from "./l2-handler";
 import {L3Handler} from "./l3-handler";
+import {RequestHeaders} from "../common/request-headers";
 
 /**
  * All Concrete Handlers either handle a request or pass it to the next handler
@@ -46,7 +47,7 @@ export class CacheHandler extends AbstractHandler {
         if (csr) {
             console.log(`${this.getLogPrefix(requestCtx)} is CSR, retrying in background`);
 
-            requestCtx.request.headers.set('user-agent', 'Googlebot'); // Force SSR in origin for retries
+            requestCtx.request.headers.set(RequestHeaders.USER_AGENT, 'Googlebot'); // Force SSR in origin for retries
 
             // Register a promise that must complete before the worker will stop running, but without affecting locking
             // the response to the client
@@ -54,15 +55,8 @@ export class CacheHandler extends AbstractHandler {
         } else if (responseCtx?.source.getName() === CacheLevel.L2) {
             console.log(`${this.getLogPrefix(requestCtx)} is L2, refreshing in background`);
 
-            requestCtx.request.headers.set('user-agent', 'Googlebot'); // Force SSR in origin for retries
-
+            requestCtx.request.headers.set(RequestHeaders.USER_AGENT, 'Googlebot'); // Force SSR in origin for retries
         }
-
-        /*
-        const response = responseCtx?.response //
-            || new Response(); // avoid compiler warning
-        console.log(`${this.getLogPrefix(requestCtx)} response headers: ${JSON.stringify([...response.headers])}`);
-        */
 
         return responseCtx;
     }

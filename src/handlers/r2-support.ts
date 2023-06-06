@@ -1,6 +1,8 @@
 import parseRange from "range-parser";
 import {RequestCtx} from '../context/beans/request-ctx'
 import {ResponseCtx} from '../context/beans/response-ctx'
+import {RequestHeaders} from '../common/request-headers'
+import {ResponseHeaders} from '../common/response-headers'
 
 
 type ParsedRange = { offset: number, length: number } | { suffix: number };
@@ -35,24 +37,24 @@ export async function put(requestCtx: RequestCtx, responseCtx: ResponseCtx, buck
     const resource = await response.arrayBuffer();
 
     const headers = responseCtx.response.headers;
-    const cdnCacheControl = headers.get('cdn-cache-control') || '';
+    const cdnCacheControl = headers.get(ResponseHeaders.CDN_CACHE_CONTROL) || '';
 
     const maxAge = parseInt(cdnCacheControl.replace(/\D/g, ''), 0);
     const cacheExpiry = new Date();
     cacheExpiry.setSeconds(cacheExpiry.getSeconds() + maxAge);
 
     const httpMetadata = {
-        cacheControl: headers.get('cache-control') || undefined,
+        cacheControl: headers.get(ResponseHeaders.CACHE_CONTROL) || undefined,
         cacheExpiry: cacheExpiry,
-        contentType: headers.get('content-type') || undefined,
-        contentLanguage: headers.get('content-language') || undefined,
-        contentDisposition: headers.get('content-disposition') || undefined,
-        contentEncoding: headers.get('content-encoding') || undefined
+        contentDisposition: headers.get(ResponseHeaders.CONTENT_DISPOSITION) || undefined,
+        contentEncoding: headers.get(ResponseHeaders.CONTENT_ENCODING) || undefined,
+        contentLanguage: headers.get(ResponseHeaders.CONTENT_LANGUAGE) || undefined,
+        contentType: headers.get(ResponseHeaders.CONTENT_TYPE) || undefined
     }
 
-    const customMetadata = {
-        'cdn-cache-control': headers.get('cdn-cache-control') || 'no-store',
-    }
+    const customMetadata = Object.fromEntries(new Map([
+        [ResponseHeaders.CDN_CACHE_CONTROL, headers.get(ResponseHeaders.CDN_CACHE_CONTROL) || 'no-store']
+    ]));
 
     return bucket.put(objectKey, resource, {
         httpMetadata: httpMetadata,
@@ -77,7 +79,7 @@ export async function match(requestCtx: RequestCtx, bucket: R2Bucket, objectKey:
 
     // Range handling
     const request = requestCtx.request;
-    const rangeHeader = request.headers.get("range");
+    const rangeHeader = request.headers.get(RequestHeaders.RANGE);
     if (rangeHeader) {
         file = await bucket.head(objectKey);
         if (file === null) return new Response("File Not Found", {status: 404});
@@ -98,13 +100,13 @@ export async function match(requestCtx: RequestCtx, bucket: R2Bucket, objectKey:
     // R2 requires that etag checks must not contain quotes, and the S3 spec only allows one etag
     // This silently ignores invalid or weak (W/) headers
     const getHeaderEtag = (header: string | null) => header?.trim().replace(/^['"]|['"]$/g, "");
-    const ifMatch = getHeaderEtag(request.headers.get("if-match"));
-    const ifNoneMatch = getHeaderEtag(request.headers.get("if-none-match"));
+    const ifMatch = getHeaderEtag(request.headers.get(RequestHeaders.IF_MATCH));
+    const ifNoneMatch = getHeaderEtag(request.headers.get(RequestHeaders.IF_NONE_MATCH));
 
-    const ifModifiedSince = Date.parse(request.headers.get("if-modified-since") || "");
-    const ifUnmodifiedSince = Date.parse(request.headers.get("if-unmodified-since") || "");
+    const ifModifiedSince = Date.parse(request.headers.get(RequestHeaders.IF_MODIFIED_SINCE) || "");
+    const ifUnmodifiedSince = Date.parse(request.headers.get(RequestHeaders.IF_UNMODIFIED_SINCE) || "");
 
-    const ifRange = request.headers.get("if-range");
+    const ifRange = request.headers.get(RequestHeaders.IF_RANGE);
     if (range && ifRange && file) {
         const maybeDate = Date.parse(ifRange);
 
@@ -142,22 +144,21 @@ export async function match(requestCtx: RequestCtx, bucket: R2Bucket, objectKey:
     file = await bucket.get(objectKey, {range});
     if (file) {
         const age = Math.round((new Date().getTime() - file.uploaded.getTime()) / 1000);
-        const headers = new Headers({
-            "cache-control": file.httpMetadata?.cacheControl ?? "",
-            "cdn-cache-control": file?.customMetadata?.['cdn-cache-control'] ?? "",
-            "content-disposition": file.httpMetadata?.contentDisposition ?? "",
-            "content-encoding": file.httpMetadata?.contentEncoding ?? "",
-            "content-language": file.httpMetadata?.contentLanguage ?? "",
-            "content-length": (range ? (rangeHasLength(range) ? range.length : range.suffix) : file.size).toString(),
-            "content-range": (range ? getRangeHeader(range, file.size) : ""),
-            "content-type": file.httpMetadata?.contentType ?? "",
-            "etag": file.httpEtag,
-            "expires": file.httpMetadata?.cacheExpiry?.toUTCString() ?? "",
-            "age": age.toString(),
-            "last-modified": file.uploaded.toUTCString() ?? "",
-        });
 
-
+        const headers = new Headers(Object.fromEntries(new Map([
+            [ResponseHeaders.AGE, age.toString()],
+            [ResponseHeaders.CACHE_CONTROL, file.httpMetadata?.cacheControl ?? ""],
+            [ResponseHeaders.CDN_CACHE_CONTROL, file?.customMetadata?.[ResponseHeaders.CDN_CACHE_CONTROL] ?? ""],
+            [ResponseHeaders.CONTENT_DISPOSITION, file.httpMetadata?.contentDisposition ?? ""],
+            [ResponseHeaders.CONTENT_ENCODING, file.httpMetadata?.contentEncoding ?? ""],
+            [ResponseHeaders.CONTENT_LANGUAGE, file.httpMetadata?.contentLanguage ?? ""],
+            [ResponseHeaders.CONTENT_LENGTH, (range ? (rangeHasLength(range) ? range.length : range.suffix) : file.size).toString()],
+            [ResponseHeaders.CONTENT_RANGE, (range ? getRangeHeader(range, file.size) : "")],
+            [ResponseHeaders.CONTENT_TYPE, file.httpMetadata?.contentType ?? ""],
+            [ResponseHeaders.ETAG, file.httpEtag],
+            [ResponseHeaders.EXPIRES, file.httpMetadata?.cacheExpiry?.toUTCString() ?? ""],
+            [ResponseHeaders.LAST_MODIFIED, file.uploaded.toUTCString() ?? ""]
+        ])));
         response = new Response((hasBody(file) && file.size !== 0) ? file.body : null, {
             status: (range ? 206 : 200),
             headers: headers

@@ -1,5 +1,5 @@
 name = "ssr-cache"
-main = "src/index.js"
+main = "src/index.ts"
 compatibility_date = "2023-01-14"
 
 workers_dev = true
@@ -7,8 +7,11 @@ workers_dev = true
 [placement]
 mode = "smart"
 
+durable_objects.bindings = [{ class_name = "Counter", name = "COUNTER" }]
+
+
 [env.ohg-d1]
-name = "d1-www-ssr-cache"
+name = "d1-www-ssr-cache-v2"
 routes = ["d1-www.ohgar.com/es/test", "d1-www.ohgar.com/es/test*"]
 
 [env.ohg-d1.vars]
@@ -20,7 +23,7 @@ TRACKING_PARAMS = "gclid,gclsrc,fbclid,utm_source,utm_medium,utm_campaign,utm_co
 SSR_RETRIES = "4000,6000,10000"
 
 [env.ohg-s1]
-name = "s1-www-ssr-cache"
+name = "s1-www-ssr-cache-v2"
 routes = ["s1-www.ohgar.com/es/test", "s1-www.ohgar.com/es/test/*"]
 
 [env.ohg-s1.vars]
@@ -32,7 +35,7 @@ TRACKING_PARAMS = "gclid,gclsrc,fbclid,utm_source,utm_medium,utm_campaign,utm_co
 SSR_RETRIES = "4000,6000,10000"
 
 [env.ohg-p1]
-name = "p1-www-ssr-cache"
+name = "p1-www-ssr-cache-v2"
 routes = ["www.ohgar.com/es/c/test-ssr-cache*"]
 analytics_engine_datasets = [
     { binding = "SSR_CACHE", dataset = "ssr_cache_p1" }
@@ -50,7 +53,7 @@ TRACKING_PARAMS = "gclid,gclsrc,fbclid,utm_source,utm_medium,utm_campaign,utm_co
 SSR_RETRIES = "2000,2000,2000,2000"
 
 [env.fs-s1]
-name = "p1-www-ssr-cache"
+name = "p1-www-ssr-cache-v2"
 routes = ["https://cdn.forumsport.com/es-es/nutricion-y-salud/productos/complementos-nutricionales-NU033-c*"]
 analytics_engine_datasets = [
     { binding = "SSR_CACHE", dataset = "ssr_cache_p1" }
@@ -71,7 +74,7 @@ SSR_RETRIES = "2000,2000,2000,2000"
 R2_PREFIX = "001"
 
 [env.wow-s1]
-name = "s1-www-ssr-cache-r2"
+name = "s1-www-ssr-cache-v2"
 routes = ["s1-www.wowconcept.com/es", "s1-www.wowconcept.com/es/*"]
 analytics_engine_datasets = [
     { binding = "SSR_CACHE", dataset = "ssr_cache_s1_v1" }
@@ -92,7 +95,7 @@ SSR_RETRIES = "7000,10000,10000,20000"
 R2_PREFIX = "001"
 
 [env.wow-p1]
-name = "p1-www-ssr-cache-r2"
+name = "p1-www-ssr-cache-v2"
 routes = ["wowconcept.com/es/product/LAC2SNE33734PCM001/test-ssr*"]
 analytics_engine_datasets = [
     { binding = "SSR_CACHE", dataset = "ssr_cache_p1_v1" }

@@ -2,6 +2,8 @@ import {Handler} from './handler';
 import {RequestCtx} from '../context/beans/request-ctx'
 import {RenderingMode, ResponseCtx} from '../context/beans/response-ctx'
 import {ResponseCtxBuilder} from "../context/builders/response-ctx-builder";
+import {RequestHeaders} from "../common/request-headers";
+import {ResponseHeaders} from "../common/response-headers";
 
 /**
  * The default chaining behavior can be implemented inside a base handler class.
@@ -153,11 +155,11 @@ export abstract class AbstractHandler implements Handler {
 
         return requestCtx.env.SSR_CACHE.writeDataPoint({
             'blobs': [
-                requestCtx.request.headers.get('cf-ray'),
+                requestCtx.request.headers.get(RequestHeaders.CF_RAY),
                 requestCtx.request.url,
                 responseCtx?.renderingMode,
-                responseCtx?.response.headers.get('cf-cache-status'),
-                responseCtx?.response.headers.get('x-debug-ssr-source'),
+                responseCtx?.response.headers.get(ResponseHeaders.CF_CACHE_STATUS),
+                responseCtx?.response.headers.get(ResponseHeaders.X_DEBUG_SSR_SOURCE),
                 city,
                 region,
                 country,
