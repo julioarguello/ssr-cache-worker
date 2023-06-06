@@ -30,8 +30,9 @@ export class L2Handler extends AbstractHandler {
         const url = new URL(requestCtx.request.url);
         url.searchParams.sort();
 
-        return `${url.hostname}/${requestCtx.env.R2_PREFIX}${url.pathname}/${url.searchParams.toString()}` //
-            .replaceAll(/[?&=]/g, '/');
+        return `${url.hostname}${requestCtx.env.R2_PREFIX}${url.pathname}/${url.searchParams.toString()}` //
+            .replaceAll(/[?&=]/g, '/')
+            .replaceAll(/\/$/g, ''); // Remove trailing slash
     }
 
     /**

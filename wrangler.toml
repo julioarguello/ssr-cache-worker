@@ -7,9 +7,6 @@ workers_dev = true
 [placement]
 mode = "smart"
 
-durable_objects.bindings = [{ class_name = "Counter", name = "COUNTER" }]
-
-
 [env.ohg-d1]
 name = "d1-www-ssr-cache-v2"
 routes = ["d1-www.ohgar.com/es/test", "d1-www.ohgar.com/es/test*"]
@@ -71,7 +68,7 @@ ORIGIN_PORT = "443"
 FORCED_EDGE_CACHE_CONTROL = "public, max-age=28800"
 TRACKING_PARAMS = "gclid,gclsrc,fbclid,utm_source,utm_medium,utm_campaign,utm_content"
 SSR_RETRIES = "2000,2000,2000,2000"
-R2_PREFIX = "001"
+R2_PREFIX = "/001"
 
 [env.wow-s1]
 name = "s1-www-ssr-cache-v2"
@@ -92,14 +89,21 @@ ORIGIN_PORT = "443"
 FORCED_EDGE_CACHE_CONTROL = "public, max-age=28800"
 TRACKING_PARAMS = "gclid,gclsrc,fbclid,utm_source,utm_medium,utm_campaign,utm_content"
 SSR_RETRIES = "7000,10000,10000,20000"
-R2_PREFIX = "001"
+R2_PREFIX = "/001"
 
 [env.wow-p1]
 name = "p1-www-ssr-cache-v2"
-routes = ["wowconcept.com/es/product/LAC2SNE33734PCM001/test-ssr*"]
+routes = ["wowconcept.com/es/product/LAC2SNE33734PCM001/test-ssr*", "wowconcept.com/ssr/tags*"]
 analytics_engine_datasets = [
     { binding = "SSR_CACHE", dataset = "ssr_cache_p1_v1" }
 ]
+durable_objects.bindings = [
+    { class_name = "Counter", name = "COUNTER"}
+]
+
+[[migrations]]
+tag = "v1" # Should be unique for each entry
+new_classes = ["Counter"]
 
 [[env.wow-p1.r2_buckets]]
 binding = "R2_BUCKET"
@@ -113,4 +117,4 @@ ORIGIN_PORT = "443"
 FORCED_EDGE_CACHE_CONTROL = "public, max-age=28800"
 TRACKING_PARAMS = "gclid,gclsrc,fbclid,utm_source,utm_medium,utm_campaign,utm_content"
 SSR_RETRIES = "7000,10000,10000,20000"
-R2_PREFIX = "001"
+R2_PREFIX = "/001"

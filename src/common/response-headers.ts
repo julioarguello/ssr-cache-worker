@@ -21,15 +21,6 @@ export class ResponseHeaders {
     static readonly CACHE_CONTROL = 'cache-control';
 
     /**
-     * Cache tag header enabled purging by tag.
-     *
-     * @type {string}
-     *
-     * [Purge by Cache-Tag](https://blog.cloudflare.com/introducing-a-powerful-way-to-purge-cache-on-cloudflare-purge-by-cache-tag/)
-     */
-    static readonly CACHE_TAG = 'cache-tag';
-
-    /**
      * Well known `cd-cache-control` response
      *
      * @see [CDN-Cache-Control: Precision Control for your CDN(s)](https://developers.cloudflare.com/cache/concepts/cdn-cache-control/)
@@ -53,16 +44,6 @@ export class ResponseHeaders {
      * @type {string}
      */
     static readonly CF_CACHE_STATUS = 'cf-cache-status';
-
-    /**
-     * The CF-ray header (otherwise known as a Ray ID) is a hashed value that encodes information about the data center and the visitor’s request.
-     * For example: CF-RAY: 230b030023ae2822-SJC.
-     *
-     * [CF-RAY](https://developers.cloudflare.com/fundamentals/get-started/reference/http-request-headers/#cf-ray)
-     *
-     * @type {string}
-     */
-    static readonly CF_RAY = 'cf-ray';
 
     /**
      * In a regular HTTP response, the Content-Disposition response header is a header indicating if the content is expected to be displayed inline in the browser, that is, as a Web page or as part of a Web page, or as an attachment, that is downloaded and saved locally.
@@ -146,6 +127,22 @@ export class ResponseHeaders {
     static readonly LAST_MODIFIED = 'last-modified';
 
     /**
+     * The Set-Cookie HTTP response header is used to send a cookie from the server to the user agent.
+     *
+     * [Set-Cookie](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie)
+     *
+     * @type {string}
+     */
+    static readonly SET_COOKIE = 'set-cookie';
+
+    /**
+     * An ad hoc response header with useful SSR handling info for further troubleshooting.
+     *
+     * @type {string}
+     */
+    static readonly X_DEBUG_SSR = 'x-debug-ssr';
+
+    /**
      * An ad hoc response header with useful SSR handling info for further troubleshooting.
      *
      * @type {string}
@@ -160,11 +157,11 @@ export class ResponseHeaders {
     static readonly X_DEBUG_CACHE_VERSION = 'x-debug-cache-version';
 
     /**
-     * An ad hoc response header with useful version differences info for further troubleshooting.
+     * An ad hoc response header with useful cache versioning info for further troubleshooting.
      *
      * @type {string}
      */
-    static readonly X_DEBUG_CACHE_VERSION_DIFF = 'x-debug-cache-version-diff';
+    static readonly X_DEBUG_CACHE_VERSION_CTX = 'x-debug-cache-version-ctx';
 
     /**
      * An ad hoc response header with useful error info for further troubleshooting.

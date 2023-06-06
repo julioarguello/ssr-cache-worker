@@ -21,11 +21,11 @@ export const parseEdgeControlHeader = (str: string) => <DynamicObject>(str || ''
 /**
  * Compares two objects.
  *
- * @param src {{}} the source object.
- * @param tgt {{}} the target object.
- * @returns {{}} an object with the properties at target object whose values are different from source object.
+ * @param src the source object.
+ * @param tgt the target object.
+ * @returns {DynamicObject} an object with the properties at target object whose values are different from source object.
  */
-export const diff = <DynamicObject>function (src: DynamicObject, tgt: DynamicObject) {
+export const diff = function (src: DynamicObject, tgt: DynamicObject) {
 
     src = src || {};
     tgt = tgt || {};

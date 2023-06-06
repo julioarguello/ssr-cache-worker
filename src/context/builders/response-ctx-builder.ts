@@ -1,6 +1,9 @@
 import {RequestCtx} from '../beans/request-ctx';
 import {RenderingMode, ResponseCtx} from '../beans/response-ctx';
 import {Handler} from "../../handlers/handler";
+import {VersionCtxBuilder} from "./version-ctx-builder";
+import {VersionCtx} from "../beans/version-ctx";
+import {ResponseHeaders} from "../../common/response-headers";
 
 /**
  * Builds response contexts from a http response.
@@ -13,6 +16,7 @@ export class ResponseCtxBuilder {
     startTime: Date;
     endTime: Date;
     duration: number;
+    versionContext!: VersionCtx;
     private readonly requestContext: RequestCtx;
 
     /**
@@ -71,21 +75,28 @@ export class ResponseCtxBuilder {
         const cdnCacheControl = this.headers.get('cdn-cache-control') || 'private';
         const forcedCdnCC = this.requestContext.env.FORCED_EDGE_CACHE_CONTROL;
 
+        // Cache headers
         if (!this.response.ok) {
-            this.headers.set('cf-cache-status', 'DYNAMIC');
-            this.headers.set('x-debug-ssr', 'N/A');
+            this.headers.set(ResponseHeaders.CF_CACHE_STATUS, 'DYNAMIC');
+            this.headers.set(ResponseHeaders.X_DEBUG_SSR, 'N/A');
         } else if (this.renderingMode === RenderingMode.SSR) {
-            const st = this.headers.get('cf-cache-status');
-            this.headers.set('cf-cache-status', st === 'DYNAMIC' ? 'MISS' : 'HIT');
-            this.headers.set('x-debug-ssr', 'ON');
-            this.headers.set('x-debug-ssr-source', this.source.getName());
+            const st = this.headers.get(ResponseHeaders.CF_CACHE_STATUS);
+            this.headers.set(ResponseHeaders.CF_CACHE_STATUS, st === 'DYNAMIC' ? 'MISS' : 'HIT');
+            this.headers.set(ResponseHeaders.X_DEBUG_SSR, 'ON');
+            this.headers.set(ResponseHeaders.X_DEBUG_SSR_SOURCE, this.source.getName());
 
-            this.headers.delete('set-cookie');
-            this.headers.set('cdn-cache-control', forcedCdnCC || cdnCacheControl);
-            this.headers.set('cache-control', 'no-store');
+            this.headers.delete(ResponseHeaders.SET_COOKIE);
+            this.headers.set(ResponseHeaders.CDN_CACHE_CONTROL, forcedCdnCC || cdnCacheControl);
+            this.headers.set(ResponseHeaders.CACHE_CONTROL, 'no-store');
         } else if (this.renderingMode === RenderingMode.CSR) {
-            this.headers.set('cf-cache-status', 'BYPASS');
-            this.headers.set('x-debug-ssr', 'OFF');
+            this.headers.set(ResponseHeaders.CF_CACHE_STATUS, 'BYPASS');
+            this.headers.set(ResponseHeaders.X_DEBUG_SSR, 'OFF');
+        }
+
+        // Versioning headers
+        if (this.versionContext) {
+            this.headers.set(ResponseHeaders.X_DEBUG_CACHE_VERSION, JSON.stringify(this.versionContext.live));
+            this.headers.set(ResponseHeaders.X_DEBUG_CACHE_VERSION_CTX, JSON.stringify(this.versionContext));
         }
 
         return this;
@@ -111,11 +122,32 @@ export class ResponseCtxBuilder {
      *
      * @param startTime the start time.
      * @param endTime the end time.
+     *
+     * @return {ResponseCtxBuilder} `this`.
      */
     setDuration(startTime: Date, endTime: Date) {
         this.startTime = startTime;
         this.endTime = endTime;
         this.duration = endTime.getTime() - startTime.getTime();
+
+        return this;
+    }
+
+
+    /**
+     * Set the resource versions.
+     *
+     * @return {ResponseCtxBuilder} `this`.
+     */
+    async setVersions() {
+        const versionContextBuilder = new VersionCtxBuilder(this.requestContext, this.response)
+        await versionContextBuilder.setLive();
+        this.versionContext = versionContextBuilder //
+            .setPersisted() //
+            .setDiff() //
+            .setRDiff() //
+            .setExpired() //
+            .build();
 
         return this;
     }

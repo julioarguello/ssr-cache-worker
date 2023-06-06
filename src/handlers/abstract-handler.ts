@@ -49,10 +49,20 @@ export abstract class AbstractHandler implements Handler {
         /* Try to fetch resource  */
         let responseCtx = await this.fetch(requestCtx);
 
-        if (responseCtx) {
+        const fetched = Boolean(responseCtx);
+        const expired = responseCtx?.versionContext?.expired || false;
+
+        if (fetched) {
             /* Resource fetched */
-            console.log(`${logPrefix} fetched in ${responseCtx.duration} ms`);
-        } else if (this.getNext()) {
+            console.log(`${logPrefix} fetched in ${responseCtx?.duration} ms`);
+        }
+
+        if (expired) {
+            /* Resource expired */
+            console.log(`${logPrefix} expired ${JSON.stringify(responseCtx?.versionContext.diff)}`);
+        }
+
+        if ((!fetched || expired) && this.getNext()) {
             /* Resource cannot be fetched, try with next handler in chain */
             console.log(`${logPrefix} to be handled by ${this.getNext().getName()}`);
 
@@ -111,11 +121,15 @@ export abstract class AbstractHandler implements Handler {
 
         let responseCtx;
         if (response) {
-            responseCtx = new ResponseCtxBuilder(requestCtx, response, this) //
+            const responseCtxBuilder = new ResponseCtxBuilder(requestCtx, response, this) //
+
+            await responseCtxBuilder.setVersions();
+
+            responseCtx = responseCtxBuilder //
                 .setRenderingMode() //
                 .setHeaders() //
                 .setResponse() //
-                .setDuration(startTime, endTime)
+                .setDuration(startTime, endTime) //
                 .build();
         }
 

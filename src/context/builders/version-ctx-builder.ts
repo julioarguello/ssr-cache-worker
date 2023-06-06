@@ -11,6 +11,7 @@ export class VersionCtxBuilder {
     persisted!: DynamicObject;
     live!: DynamicObject;
     diff!: DynamicObject;
+    rDiff!: DynamicObject;
     expired!: boolean;
     private readonly requestContext: RequestCtx;
     private readonly response: Response;
@@ -49,6 +50,19 @@ export class VersionCtxBuilder {
         if (!this.live) throw 'invalid live version';
 
         this.diff = Utils.diff(this.persisted, this.live);
+
+        return this;
+    }
+
+    /**
+     * Sets the difference between live and persisted versions.
+     *
+     * @returns {VersionCtxBuilder} `this`.
+     */
+    setRDiff() {
+        // if (!this.persisted) throw 'invalid persisted version';
+
+        this.rDiff = Utils.diff(this.live, this.persisted);
 
         return this;
     }

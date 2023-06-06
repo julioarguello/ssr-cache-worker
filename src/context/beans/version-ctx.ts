@@ -1,14 +1,16 @@
 /** @module proxy/beans/version */
 import {VersionCtxBuilder} from "../builders/version-ctx-builder";
+import {DynamicObject} from "../../common/utils";
 
 /**
  * The version context.
  */
 export class VersionCtx {
-    private persisted: string;
-    private live: string;
-    private diff: string;
-    private expired: boolean;
+    public live: DynamicObject;
+    public expired: boolean;
+    public diff: DynamicObject;
+    private persisted: DynamicObject;
+    private rDiff: DynamicObject;
 
     /**
      * Constructs a version context using all available properties.
@@ -19,6 +21,7 @@ export class VersionCtx {
         this.persisted = builder.persisted;
         this.live = builder.live;
         this.diff = builder.diff;
+        this.rDiff = builder.rDiff;
         this.expired = builder.expired;
     }
 }

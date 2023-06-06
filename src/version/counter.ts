@@ -33,6 +33,7 @@ export class Counter {
                 currentValue = --this.value;
                 await this.state.storage.put('value', this.value);
                 break;
+            case '/current':
             case '/':
                 // Just serve the current value. No storage calls needed!
                 break;
@@ -40,11 +41,9 @@ export class Counter {
                 return new Response('Not found', {status: 404});
         }
 
-        // Return `currentValue`. Note that `this.value` may have been
-        // incremented or decremented by a concurrent request when we
-        // yielded the event loop to `await` the `storage.put` above!
-        // That's why we stored the counter value created by this
-        // request in `currentValue` before we used `await`.
+        // Return `currentValue`. Note that `this.value` may have been incremented or decremented by a concurrent
+        // request when we yielded the event loop to `await` the `storage.put` above!
+        // That's why we stored the counter value created by this request in `currentValue` before we used `await`.
         return new Response(String(currentValue));
     }
 }

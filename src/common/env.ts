@@ -11,7 +11,7 @@ export interface Env extends ExecutionContext {
     SSR_CACHE: any,
     SSR_RETRIES: string,
     R2_PREFIX: string,
-    COUNTER_DURABLE_OBJECT: DurableObjectNamespace
+    COUNTER: DurableObjectNamespace
 }
 
 /**

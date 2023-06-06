@@ -117,7 +117,6 @@ export class CacheHandler extends AbstractHandler {
      * @return {Promise<unknown>}
      */
     private sleep(ms: number): Promise<void> {
-        // @ts-ignore
         return new Promise(resolve => {
             setTimeout(resolve, ms,);
         });

@@ -2,10 +2,19 @@ import {Router} from 'itty-router';
 import {RequestCtxBuilder} from './context/builders/request-ctx-builder';
 import {CacheHandler} from './handlers/cache-handler';
 import {ResponseHeaders} from './common/response-headers';
-import {Env} from "./common/env";
+import {versions} from "./version/versions";
+import {Env} from './common/env';
+
+// In order for the workers runtime to find the class that implements
+// our Durable Object namespace, we must export it from the root module.
+export {Counter} from './version/counter'
 
 // Create a new router
 const router = Router();
+
+/* Forbidden paths that cannot be cached */
+router.all('/ssr/tags/:tag/:operation',
+    async (request: Request, env: Env, event: ExecutionContext) => tagRenderer.fetch(request, env, event));
 
 /* Forbidden paths that cannot be cached */
 router.all('/[a-z]{2}/(cart|order|login|my-account)*',
@@ -30,7 +39,7 @@ const ssrRenderer = {
      * Forwards a given request to origin forcing cache honoring origin headers.
      *
      * @param {Request} request the http request.
-     * @param {any} env string key-value bindings.
+     * @param {Env} env string key-value bindings.
      * @param {ExecutionContext} event the event.
      * @returns {Promise<Response>} the http response.
      *
@@ -41,7 +50,9 @@ const ssrRenderer = {
         if (allowedMethods.indexOf(request.method) === -1) return new Response(
             'Method Not Allowed', {status: 405});
 
-        const requestCtx = new RequestCtxBuilder(request, env, event).setRequest().build();
+        const requestCtx = new RequestCtxBuilder(request, env, event) //
+            .setRequest() //
+            .build();
 
         let response;
         try {
@@ -57,10 +68,41 @@ const ssrRenderer = {
 
             // Add the error stack into a header to find out what happened
             response.headers.set(ResponseHeaders.X_DEBUG_ERROR_STACK, stack);
-            response.headers.set(ResponseHeaders.X_DEBUG_ERROR, error.message);
+            response.headers.set(ResponseHeaders.X_DEBUG_ERROR, error.message || String(err));
         }
 
         return response;
+    },
+};
+
+/**
+ * Handler to manage cache tags.
+ *
+ * @author [Julio Argüello](mailto:jarguello@seidor.com)
+ * @since 20230606
+ */
+const tagRenderer = {
+
+    /**
+     * Forwards a given request to origin AS IS.
+     *
+     * @param {Request} request the http request.
+     * @param {Env} env string key-value bindings.
+     * @param {ExecutionContext} event the event.
+     * @returns {Promise<Response>} the http response.
+     *
+     * @see [FetchEvent](https://developers.cloudflare.com/workers/runtime-apis/fetch-event#syntax-module-worker)
+     */
+    async fetch(request: Request, env: Env, event: ExecutionContext) {
+
+        console.log(request.url)
+
+        // @ts-ignore
+        const {tag, operation} = request.params;
+
+        const count = await versions(tag, new Request(`https://127.0.0.1/${operation}`, request), env);
+
+        return new Response(`${count}`);
     },
 };
 
@@ -77,7 +119,7 @@ const dftRenderer = {
      * Forwards a given request to origin AS IS.
      *
      * @param {Request} request the http request.
-     * @param {ExecutionContext} env string key-value bindings.
+     * @param {Env} env string key-value bindings.
      * @param {ExecutionContext} event the event.
      * @returns {Promise<Response>} the http response.
      *
@@ -89,5 +131,5 @@ const dftRenderer = {
 };
 
 export default {
-    fetch: router.handle,
+    fetch: router.handle
 };

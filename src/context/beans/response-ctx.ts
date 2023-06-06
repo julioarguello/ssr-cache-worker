@@ -1,5 +1,6 @@
 import {ResponseCtxBuilder} from '../builders/response-ctx-builder';
 import {Handler} from "../../handlers/handler";
+import {VersionCtx} from "./version-ctx";
 
 /**
  * Rendering mode.
@@ -32,6 +33,8 @@ export class ResponseCtx {
     public source: Handler;
     public renderingMode: string;
     public duration: number;
+    public versionContext: VersionCtx;
+
 
     /**
      * Constructs a response context using all available properties.
@@ -43,5 +46,6 @@ export class ResponseCtx {
         this.source = builder.source;
         this.renderingMode = builder.renderingMode;
         this.duration = builder.duration;
+        this.versionContext = builder.versionContext;
     }
 }

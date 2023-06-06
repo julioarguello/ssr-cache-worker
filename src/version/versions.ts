@@ -14,7 +14,7 @@ import {DynamicObject} from "../common/utils";
  */
 export const versions = async function (tag: string, request: Request, env: Env) {
 
-    let counter = env.COUNTER_DURABLE_OBJECT;
+    let counter = env.COUNTER;
     let id = counter.idFromName(tag);
     let obj = counter.get(id);
 
@@ -39,14 +39,14 @@ export const getPersistedVersion = function (response: Response) {
  *
  * @param {Request} request the http request.
  * @param {Response} response the http response.
- * @param {} env string key-value bindings.
+ * @param {Env} env string key-value bindings.
  * @param defaultTag the default tag if none.
  * @returns {Promise<{}>} live version.
  *
  * @see doGetLiveVersion
  */
 export const getLiveVersion = async function (
-    request: Request, response: Response, env: Env, defaultTag: string = '') {
+    request: Request, response: Response, env: Env, defaultTag: string = 'default') {
 
     const edgeControlHeader = response.headers.get(ResponseHeaders.CDN_CACHE_CONTROL) || '';
     const edgeControl = Utils.parseEdgeControlHeader(edgeControlHeader);
@@ -59,8 +59,8 @@ export const getLiveVersion = async function (
 /**
  * Effective logic for getting the live version of some cache tags.
  *
- * @param {string[]} tags the cache tags.
- * @param {} env string key-value bindings.
+ * @param tags the cache tags.
+ * @param env string key-value bindings.
  * @return {Promise<{}>} an object with a property for tag with versions as values.
  */
 const doGetLiveVersion = async function (tags: string, env: Env) {
@@ -69,7 +69,7 @@ const doGetLiveVersion = async function (tags: string, env: Env) {
     const result: DynamicObject = {}
 
     for (const tag of tagArr) {
-        result.tag = await versions(tag, new Request('/'), env);
+        result[tag] = await versions(tag, new Request('https://127.0.0.1/'), env);
     }
     return result;
 };
