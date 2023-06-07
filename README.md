@@ -178,16 +178,17 @@ https://developers.cloudflare.com/analytics/graphql-api/
 [Wrangler tail](https://github.com/cloudflare/wrangler-legacy/issues/1368#issuecomment-640116634)
 
 ```shell
-wrangler tail --format json --env p1 | jq -r \
+wrangler tail --format json --env wow-p1 | jq -r \
        '# loop through all logs while still having the full object accessible
     .logs[] as $o |
         # loop through messages in each log
     $o.message[] as $m |
         # set variables for clarity (you can put these in the format string instead)
     .event.request.headers."cf-connecting-ip" as $ip |
+    .event.request.headers."cf-ray" as $ray |
     ($o.timestamp / 1000 | todate) as $datetime |
         # Format the output
-    "[\($datetime)][\($o.level)][\($ip)] \($m)"'
+    "[\($datetime)][\($o.level)][\($ip)][\($ray)] \($m)"'
 ```
 
 TODO SQL postman 

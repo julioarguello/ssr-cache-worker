@@ -2,16 +2,15 @@ import {VersionCtx} from '../beans/version-ctx';
 import {RequestCtx} from '../beans/request-ctx';
 import * as Versions from '../../version/versions';
 import * as Utils from '../../common/utils';
-import {DynamicObject} from "../../common/utils";
 
 /**
  * Builds version contexts from a request context.
  */
 export class VersionCtxBuilder {
-    persisted!: DynamicObject;
-    live!: DynamicObject;
-    diff!: DynamicObject;
-    rDiff!: DynamicObject;
+    persisted!: Record<string, number>;
+    live!: Record<string, number>;
+    diff!: Record<string, number>;
+    rDiff!: Record<string, number>;
     expired!: boolean;
     private readonly requestContext: RequestCtx;
     private readonly response: Response;

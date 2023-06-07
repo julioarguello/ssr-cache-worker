@@ -140,28 +140,21 @@ export class ResponseHeaders {
      *
      * @type {string}
      */
-    static readonly X_DEBUG_SSR = 'x-debug-ssr';
+    static readonly X_DEBUG_RENDERING_MODE = 'x-debug-rendering-mode';
 
     /**
      * An ad hoc response header with useful SSR handling info for further troubleshooting.
      *
      * @type {string}
      */
-    static readonly X_DEBUG_SSR_SOURCE = 'x-debug-ssr-source';
+    static readonly X_DEBUG_HANDLER = 'x-debug-handler';
 
     /**
      * An ad hoc response header with useful cache versioning info for further troubleshooting.
      *
      * @type {string}
      */
-    static readonly X_DEBUG_CACHE_VERSION = 'x-debug-cache-version';
-
-    /**
-     * An ad hoc response header with useful cache versioning info for further troubleshooting.
-     *
-     * @type {string}
-     */
-    static readonly X_DEBUG_CACHE_VERSION_CTX = 'x-debug-cache-version-ctx';
+    static readonly X_DEBUG_VERSION = 'x-debug-version';
 
     /**
      * An ad hoc response header with useful error info for further troubleshooting.

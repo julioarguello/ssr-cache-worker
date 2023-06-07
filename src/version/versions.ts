@@ -2,7 +2,6 @@ import {RequestParams} from '../common/request-params'
 import {ResponseHeaders} from '../common/response-headers'
 import * as Utils from '../common/utils';
 import {Env} from "../common/env";
-import {DynamicObject} from "../common/utils";
 
 /**
  * Get the version associated with a given tag and request.
@@ -30,8 +29,9 @@ export const versions = async function (tag: string, request: Request, env: Env)
  * @return {any|null} an object as result of parsing the cache version header.
  */
 export const getPersistedVersion = function (response: Response) {
-    const cacheVersionHeader = response.headers.get(ResponseHeaders.X_DEBUG_CACHE_VERSION);
-    return cacheVersionHeader ? JSON.parse(cacheVersionHeader) : null;
+    const cacheVersionHeader = response.headers.get(ResponseHeaders.X_DEBUG_VERSION);
+
+    return cacheVersionHeader ? JSON.parse(cacheVersionHeader).live : null;
 };
 
 /**
@@ -66,7 +66,7 @@ export const getLiveVersion = async function (
 const doGetLiveVersion = async function (tags: string, env: Env) {
     const tagArr = (tags || '').split('|');
 
-    const result: DynamicObject = {}
+    const result: Record<string, number> = {}
 
     for (const tag of tagArr) {
         result[tag] = await versions(tag, new Request('https://127.0.0.1/'), env);

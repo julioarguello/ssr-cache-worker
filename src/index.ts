@@ -40,7 +40,7 @@ const ssrRenderer = {
      *
      * @param {Request} request the http request.
      * @param {Env} env string key-value bindings.
-     * @param {ExecutionContext} event the event.
+     * @param event the event.
      * @returns {Promise<Response>} the http response.
      *
      * @see [FetchEvent](https://developers.cloudflare.com/workers/runtime-apis/fetch-event#syntax-module-worker)
@@ -88,7 +88,7 @@ const tagRenderer = {
      *
      * @param {Request} request the http request.
      * @param {Env} env string key-value bindings.
-     * @param {ExecutionContext} event the event.
+     * @param event the event.
      * @returns {Promise<Response>} the http response.
      *
      * @see [FetchEvent](https://developers.cloudflare.com/workers/runtime-apis/fetch-event#syntax-module-worker)
@@ -120,7 +120,7 @@ const dftRenderer = {
      *
      * @param {Request} request the http request.
      * @param {Env} env string key-value bindings.
-     * @param {ExecutionContext} event the event.
+     * @param event the event.
      * @returns {Promise<Response>} the http response.
      *
      * @see [FetchEvent](https://developers.cloudflare.com/workers/runtime-apis/fetch-event#syntax-module-worker)

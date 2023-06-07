@@ -52,10 +52,6 @@ export class CacheHandler extends AbstractHandler {
             // Register a promise that must complete before the worker will stop running, but without affecting locking
             // the response to the client
             requestCtx.event.waitUntil(this.refresh(requestCtx));
-        } else if (responseCtx?.source.getName() === CacheLevel.L2) {
-            console.log(`${this.getLogPrefix(requestCtx)} is L2, refreshing in background`);
-
-            requestCtx.request.headers.set(RequestHeaders.USER_AGENT, 'Googlebot'); // Force SSR in origin for retries
         }
 
         return responseCtx;

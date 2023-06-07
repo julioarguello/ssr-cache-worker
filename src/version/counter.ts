@@ -8,7 +8,7 @@ export class Counter {
     /**
      * Constructs a counter durable object.
      *
-     * @param state {DurableObjectState} the internal storage used by the durable object.
+     * @param state the internal storage used by the durable object.
      */
     constructor(state: DurableObjectState) {
         this.state = state;

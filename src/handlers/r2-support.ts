@@ -54,7 +54,7 @@ export async function put(requestCtx: RequestCtx, responseCtx: ResponseCtx, buck
 
     const customMetadata = Object.fromEntries(new Map([
         [ResponseHeaders.CDN_CACHE_CONTROL, headers.get(ResponseHeaders.CDN_CACHE_CONTROL) || 'no-store'],
-        [ResponseHeaders.X_DEBUG_CACHE_VERSION, headers.get(ResponseHeaders.X_DEBUG_CACHE_VERSION) || '{}']
+        [ResponseHeaders.X_DEBUG_VERSION, headers.get(ResponseHeaders.X_DEBUG_VERSION) || '{}']
     ]));
 
     return bucket.put(objectKey, resource, {
@@ -159,7 +159,7 @@ export async function match(requestCtx: RequestCtx, bucket: R2Bucket, objectKey:
             [ResponseHeaders.ETAG, file.httpEtag],
             [ResponseHeaders.EXPIRES, file.httpMetadata?.cacheExpiry?.toUTCString() ?? ""],
             [ResponseHeaders.LAST_MODIFIED, file.uploaded.toUTCString() ?? ""],
-            [ResponseHeaders.X_DEBUG_CACHE_VERSION, file?.customMetadata?.[ResponseHeaders.X_DEBUG_CACHE_VERSION] ?? ""]
+            [ResponseHeaders.X_DEBUG_VERSION, file?.customMetadata?.[ResponseHeaders.X_DEBUG_VERSION] ?? ""]
         ])));
         response = new Response((hasBody(file) && file.size !== 0) ? file.body : null, {
             status: (range ? 206 : 200),

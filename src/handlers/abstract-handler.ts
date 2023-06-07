@@ -44,10 +44,10 @@ export abstract class AbstractHandler implements Handler {
      */
     public async handle(requestCtx: RequestCtx): Promise<undefined | ResponseCtx> {
 
-        const logPrefix = this.getLogPrefix(requestCtx);
-
         /* Try to fetch resource  */
         let responseCtx = await this.fetch(requestCtx);
+
+        const logPrefix = this.getLogPrefix(requestCtx, responseCtx);
 
         const fetched = Boolean(responseCtx);
         const expired = responseCtx?.versionContext?.expired || false;
@@ -62,22 +62,29 @@ export abstract class AbstractHandler implements Handler {
             console.log(`${logPrefix} expired ${JSON.stringify(responseCtx?.versionContext.diff)}`);
         }
 
-        if ((!fetched || expired) && this.getNext()) {
-            /* Resource cannot be fetched, try with next handler in chain */
-            console.log(`${logPrefix} to be handled by ${this.getNext().getName()}`);
+        if (!fetched || expired) {
+            if (this.getNext()) {
+                /* Resource cannot be fetched or is expired, try with next handler in chain */
+                console.log(`${logPrefix} to be handled by ${this.getNext().getName()}`);
 
-            responseCtx = await this.getNext().handle(requestCtx);
+                const expiredResponseCtx = responseCtx;
+                responseCtx = await this.getNext().handle(requestCtx);
+                if (responseCtx && expiredResponseCtx) {
+                    console.log(`${logPrefix} merging expired version`);
+                    responseCtx.merge(expiredResponseCtx);
+                }
 
-            /* Cache resource if and only if rendering mode is SSR */
-            if (responseCtx?.renderingMode === RenderingMode.SSR) {
-                if (this.doCache(requestCtx, responseCtx)) {
-                    console.log(`${logPrefix} cached`);
+                /* Cache resource if and only if rendering mode is SSR */
+                if (responseCtx?.renderingMode === RenderingMode.SSR) {
+                    if (this.doCache(requestCtx, responseCtx)) {
+                        console.log(`${logPrefix} cached`);
+                    }
+                } else {
+                    console.log(`${logPrefix} is not cacheable. Rendering mode is '${responseCtx?.renderingMode}'`);
                 }
             } else {
-                console.log(`${logPrefix} is not cacheable. Rendering mode is '${responseCtx?.renderingMode}'`);
+                console.error(`${logPrefix} can not be fetched`);
             }
-        } else {
-            console.error(`${logPrefix} can not be fetched`);
         }
 
         /* Save analytics */
@@ -96,14 +103,15 @@ export abstract class AbstractHandler implements Handler {
     /**
      * Gets the log prefix to be used on request handler logging.
      * @param requestCtx the request context.
+     * @param responseCtx the response context.
      * @protected
      */
-    protected getLogPrefix(requestCtx: RequestCtx): string {
+    protected getLogPrefix(requestCtx: RequestCtx, responseCtx: ResponseCtx | undefined = undefined): string {
         const {request, attempt} = requestCtx;
         const url = new URL(request.url);
         const resource = [url.pathname, url.searchParams.toString()].filter(sp => sp !== '').join('?')
 
-        return `[${this.name}][${attempt}] Request \'${resource}\'`;
+        return `[${this.name}][${attempt}][${responseCtx?.response?.status || '---'}] Request \'${resource}\'`;
     }
 
     /**
@@ -121,7 +129,7 @@ export abstract class AbstractHandler implements Handler {
 
         let responseCtx;
         if (response) {
-            const responseCtxBuilder = new ResponseCtxBuilder(requestCtx, response, this) //
+            const responseCtxBuilder = new ResponseCtxBuilder(requestCtx, response, this);
 
             await responseCtxBuilder.setVersions();
 
@@ -173,7 +181,7 @@ export abstract class AbstractHandler implements Handler {
                 requestCtx.request.url,
                 responseCtx?.renderingMode,
                 responseCtx?.response.headers.get(ResponseHeaders.CF_CACHE_STATUS),
-                responseCtx?.response.headers.get(ResponseHeaders.X_DEBUG_SSR_SOURCE),
+                responseCtx?.response.headers.get(ResponseHeaders.X_DEBUG_HANDLER),
                 city,
                 region,
                 country,

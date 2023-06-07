@@ -1,12 +1,10 @@
-export type DynamicObject = { [key: string]: any }
-
 /**
  * Parses `edge-control` header.
  *
  * @param str {string} the value of the custom HTTP response header `edge-control`
  * @returns {{}} an object with on property per header attribute.
  */
-export const parseEdgeControlHeader = (str: string) => <DynamicObject>(str || '')//
+export const parseEdgeControlHeader = (str: string) => <Record<string, string>>(str || '')//
     .split(',')//
     .map(v => v.split('=')) //
     .reduce((acc, v) => {
@@ -23,15 +21,15 @@ export const parseEdgeControlHeader = (str: string) => <DynamicObject>(str || ''
  *
  * @param src the source object.
  * @param tgt the target object.
- * @returns {DynamicObject} an object with the properties at target object whose values are different from source object.
+ * @returns {Record<string, any>} an object with the properties at target object whose values are different from source object.
  */
-export const diff = function (src: DynamicObject, tgt: DynamicObject) {
+export const diff = function (src: Record<string, any>, tgt: Record<string, any>) {
 
     src = src || {};
     tgt = tgt || {};
 
     return Object.keys(tgt)//
-        .reduce((acc: DynamicObject, key) => {
+        .reduce((acc: Record<string, any>, key) => {
             const srcVal = String(src[key]);
             const tgtVal = String(tgt[key]);
 

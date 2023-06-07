@@ -1,6 +1,6 @@
 import {AbstractHandler} from './abstract-handler';
 import {RequestCtx} from '../context/beans/request-ctx'
-import {ResponseCtx, CacheLevel} from '../context/beans/response-ctx'
+import {CacheLevel, ResponseCtx} from '../context/beans/response-ctx'
 
 /**
  * Cache level 3 implementation.

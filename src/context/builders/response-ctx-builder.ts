@@ -9,15 +9,15 @@ import {ResponseHeaders} from "../../common/response-headers";
  * Builds response contexts from a http response.
  */
 export class ResponseCtxBuilder {
-    headers: Headers | undefined;
-    response: Response;
-    source: Handler;
-    renderingMode: string;
-    startTime: Date;
-    endTime: Date;
-    duration: number;
-    versionContext!: VersionCtx;
-    private readonly requestContext: RequestCtx;
+    public headers: Headers | undefined;
+    public response: Response;
+    public source: Handler;
+    public renderingMode: string;
+    public startTime: Date;
+    public endTime: Date;
+    public duration: number;
+    public versionContext!: VersionCtx;
+    public readonly requestContext: RequestCtx;
 
     /**
      * Constructs a `ResponseContextBuilder` given the associated request context and http response.
@@ -51,7 +51,7 @@ export class ResponseCtxBuilder {
      */
     setRenderingMode() {
         const url = new URL(this.requestContext.request.url);
-        const cacheControl = url.searchParams.get('cdn-cache-control') || this.response.headers.get('cdn-cache-control') || 'no-store';
+        const cacheControl = url.searchParams.get(ResponseHeaders.CDN_CACHE_CONTROL) || this.response.headers.get(ResponseHeaders.CDN_CACHE_CONTROL) || 'no-store';
         const csr = cacheControl.indexOf('no-store') > -1;
         const ssr = !csr && this.response.ok;
 
@@ -69,35 +69,33 @@ export class ResponseCtxBuilder {
      */
     setHeaders() {
         if (!this.renderingMode) throw 'invalid rendering mode';
+        if (!this.versionContext) throw 'invalid version context';
 
         this.headers = new Headers(this.response.headers);
 
-        const cdnCacheControl = this.headers.get('cdn-cache-control') || 'private';
+        const cdnCacheControl = this.headers.get(ResponseHeaders.CDN_CACHE_CONTROL) || 'private';
         const forcedCdnCC = this.requestContext.env.FORCED_EDGE_CACHE_CONTROL;
 
         // Cache headers
         if (!this.response.ok) {
             this.headers.set(ResponseHeaders.CF_CACHE_STATUS, 'DYNAMIC');
-            this.headers.set(ResponseHeaders.X_DEBUG_SSR, 'N/A');
+        } else if (this.versionContext.expired) {
+            this.headers.set(ResponseHeaders.CF_CACHE_STATUS, 'EXPIRED');
         } else if (this.renderingMode === RenderingMode.SSR) {
-            const st = this.headers.get(ResponseHeaders.CF_CACHE_STATUS);
-            this.headers.set(ResponseHeaders.CF_CACHE_STATUS, st === 'DYNAMIC' ? 'MISS' : 'HIT');
-            this.headers.set(ResponseHeaders.X_DEBUG_SSR, 'ON');
-            this.headers.set(ResponseHeaders.X_DEBUG_SSR_SOURCE, this.source.getName());
+            const status = this.headers.get(ResponseHeaders.CF_CACHE_STATUS);
+            this.headers.set(ResponseHeaders.CF_CACHE_STATUS, status === 'DYNAMIC' ? 'MISS' : 'HIT');
 
             this.headers.delete(ResponseHeaders.SET_COOKIE);
             this.headers.set(ResponseHeaders.CDN_CACHE_CONTROL, forcedCdnCC || cdnCacheControl);
             this.headers.set(ResponseHeaders.CACHE_CONTROL, 'no-store');
         } else if (this.renderingMode === RenderingMode.CSR) {
             this.headers.set(ResponseHeaders.CF_CACHE_STATUS, 'BYPASS');
-            this.headers.set(ResponseHeaders.X_DEBUG_SSR, 'OFF');
         }
 
-        // Versioning headers
-        if (this.versionContext) {
-            this.headers.set(ResponseHeaders.X_DEBUG_CACHE_VERSION, JSON.stringify(this.versionContext.live));
-            this.headers.set(ResponseHeaders.X_DEBUG_CACHE_VERSION_CTX, JSON.stringify(this.versionContext));
-        }
+        // Common
+        this.headers.set(ResponseHeaders.X_DEBUG_HANDLER, this.source.getName());
+        this.headers.set(ResponseHeaders.X_DEBUG_RENDERING_MODE, this.renderingMode);
+        this.headers.set(ResponseHeaders.X_DEBUG_VERSION, JSON.stringify(this.versionContext));
 
         return this;
     }
