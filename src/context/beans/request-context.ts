@@ -1,10 +1,10 @@
-import {RequestCtxBuilder} from '../builders/request-ctx-builder';
+import {RequestContextBuilder} from '../builders/request-context-builder';
 import {Env} from "../../common/env";
 
 /**
  * The request context.
  */
-export class RequestCtx {
+export class RequestContext {
     public request: Request;
     public env: Env;
     public event: ExecutionContext;
@@ -13,9 +13,9 @@ export class RequestCtx {
     /**
      * Constructs a request context using all available properties.
      *
-     * @param builder {RequestCtxBuilder}
+     * @param builder {RequestContextBuilder}
      */
-    constructor(builder: RequestCtxBuilder) {
+    constructor(builder: RequestContextBuilder) {
         this.request = builder.request;
         this.env = builder.env;
         this.event = builder.event;
@@ -25,7 +25,7 @@ export class RequestCtx {
     /**
      * Increments the number of attempts made to fetch an SSR response from origin.
      *
-     * @return {RequestCtx} `this`.
+     * @return {RequestContext} `this`.
      */
     newAttempt() {
         this.attempt++;

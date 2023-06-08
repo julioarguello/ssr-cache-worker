@@ -1,5 +1,5 @@
 /**
- *
+ * A persistent counter implemented on top of a durable object.
  */
 export class Counter {
     private state: DurableObjectState;
@@ -19,19 +19,27 @@ export class Counter {
         }).then(r => r);
     }
 
+    /**
+     * Counter operations in a fetch like style.
+     *
+     * @param request the http request.
+     */
     // Handle HTTP requests from clients.
     async fetch(request: Request) {
         // Apply requested action.
         let url = new URL(request.url);
-        let currentValue = this.value;
+        let oldValue = this.value;
+        let newValue = this.value;
         switch (url.pathname) {
             case '/increment':
-                currentValue = ++this.value;
+                newValue = ++this.value;
                 await this.state.storage.put('value', this.value);
+                console.log(`Counter incremented from '${oldValue}' to '${newValue}'`);
                 break;
             case '/decrement':
-                currentValue = --this.value;
+                newValue = --this.value;
                 await this.state.storage.put('value', this.value);
+                console.log(`Counter decremented from '${oldValue}' to '${newValue}'`);
                 break;
             case '/current':
             case '/':
@@ -44,6 +52,6 @@ export class Counter {
         // Return `currentValue`. Note that `this.value` may have been incremented or decremented by a concurrent
         // request when we yielded the event loop to `await` the `storage.put` above!
         // That's why we stored the counter value created by this request in `currentValue` before we used `await`.
-        return new Response(String(currentValue));
+        return new Response(String(newValue));
     }
 }

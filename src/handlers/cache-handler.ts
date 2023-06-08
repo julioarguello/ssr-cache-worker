@@ -1,5 +1,5 @@
-import {RequestCtx} from '../context/beans/request-ctx'
-import {RenderingMode, ResponseCtx, CacheLevel} from '../context/beans/response-ctx'
+import {RequestContext} from '../context/beans/request-context'
+import {RenderingMode, ResponseContext, CacheLevel} from '../context/beans/response-context'
 import {AbstractHandler} from "./abstract-handler";
 import {L1Handler} from "./l1-handler";
 import {L2Handler} from "./l2-handler";
@@ -13,9 +13,6 @@ import {RequestHeaders} from "../common/request-headers";
 
 /**
  * First cache handler in chain.
- *
- * @param {RequestCtx} requestCtx the http request context.
- * @return {Promise<ResponseCtx>} a promise to the response context.
  */
 export class CacheHandler extends AbstractHandler {
 
@@ -38,43 +35,43 @@ export class CacheHandler extends AbstractHandler {
     /**
      * Adds a retry policy on top of super implementation for CSR responses.
      *
-     * @param requestCtx the request context.
+     * @param requestContext the request context.
      */
-    public async handle(requestCtx: RequestCtx): Promise<ResponseCtx | undefined> {
-        const responseCtx = await super.handle(requestCtx);
+    public async handle(requestContext: RequestContext): Promise<ResponseContext | undefined> {
+        const responseContext = await super.handle(requestContext);
 
-        const csr = (responseCtx?.renderingMode === RenderingMode.CSR);
+        const csr = (responseContext?.renderingMode === RenderingMode.CSR);
         if (csr) {
-            console.log(`${this.getLogPrefix(requestCtx)} is CSR, retrying in background`);
+            console.log(`${this.getLogPrefix(requestContext)} is CSR, retrying in background`);
 
-            requestCtx.request.headers.set(RequestHeaders.USER_AGENT, 'Googlebot'); // Force SSR in origin for retries
+            requestContext.request.headers.set(RequestHeaders.USER_AGENT, 'Googlebot'); // Force SSR in origin for retries
 
             // Register a promise that must complete before the worker will stop running, but without affecting locking
             // the response to the client
-            requestCtx.event.waitUntil(this.refresh(requestCtx));
+            requestContext.event.waitUntil(this.refresh(requestContext));
         }
 
-        return responseCtx;
+        return responseContext;
     }
 
     /**
      * This implementation is unable to fetch anything. So it always delegates into subsequent handlers.
      *
-     * @param requestCtx the request context.
+     * @param requestContext the request context.
      * @protected
      */
-    protected async doFetch(requestCtx: RequestCtx): Promise<Response | undefined> {
+    protected async doFetch(requestContext: RequestContext): Promise<Response | undefined> {
         return undefined;
     }
 
     /**
      * This implementation is unable to cache anything. So it always returns false.
      *
-     * @param requestCtx the request context.
-     * @param responseCtx the response context.
+     * @param requestContext the request context.
+     * @param responseContext the response context.
      * @protected
      */
-    protected doCache(requestCtx: RequestCtx, responseCtx: ResponseCtx) {
+    protected doCache(requestContext: RequestContext, responseContext: ResponseContext) {
         return false;
     }
 
@@ -82,27 +79,27 @@ export class CacheHandler extends AbstractHandler {
      * Tries to cache a page whose last rendering attempt was CSR assuming subsequent fetch attempts after a
      * configurable timeout will hit origin cache.
      *
-     * @param requestCtx the http request context.
+     * @param requestContext the http request context.
      * @private
      *
      * @see [Spartacus Server-Side Rendering Optimization](https://sap.github.io/spartacus-docs/server-side-rendering-optimization/)
      */
-    private async refresh(requestCtx: RequestCtx) {
+    private async refresh(requestContext: RequestContext) {
 
-        const env = requestCtx.env;
+        const env = requestContext.env;
 
         const retries = env.SSR_RETRIES //
             .split(',') //
             .filter((ms: string) => ms !== 'null' && ms !== '') //
             .map((item: string) => parseInt(item));
 
-        if (retries.length > requestCtx.attempt) {
-            const timeout = retries[requestCtx.attempt]
+        if (retries.length > requestContext.attempt) {
+            const timeout = retries[requestContext.attempt]
 
-            console.log(`${this.getLogPrefix(requestCtx)} sleeping for ${timeout} ms`);
+            console.log(`${this.getLogPrefix(requestContext)} sleeping for ${timeout} ms`);
             await this.sleep(timeout);
 
-            return this.handle(requestCtx.newAttempt());
+            return this.handle(requestContext.newAttempt());
         }
     }
 

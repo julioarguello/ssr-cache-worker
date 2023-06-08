@@ -1,6 +1,6 @@
 import parseRange from "range-parser";
-import {RequestCtx} from '../context/beans/request-ctx'
-import {ResponseCtx} from '../context/beans/response-ctx'
+import {RequestContext} from '../context/beans/request-context'
+import {ResponseContext} from '../context/beans/response-context'
 import {RequestHeaders} from '../common/request-headers'
 import {ResponseHeaders} from '../common/response-headers'
 
@@ -27,16 +27,16 @@ function getRangeHeader(range: ParsedRange, fileSize: number): string {
 /**
  * Puts and http response to R2.
  *
- * @param requestCtx the request context.
- * @param responseCtx the response context.
+ * @param requestContext the request context.
+ * @param responseContext the response context.
  * @param bucket the R2 bucket.
  * @param objectKey the object key.
  */
-export async function put(requestCtx: RequestCtx, responseCtx: ResponseCtx, bucket: R2Bucket, objectKey: string): Promise<R2Object> {
-    const response = responseCtx.response.clone()
+export async function put(requestContext: RequestContext, responseContext: ResponseContext, bucket: R2Bucket, objectKey: string): Promise<R2Object> {
+    const response = responseContext.response.clone()
     const resource = await response.arrayBuffer();
 
-    const headers = responseCtx.response.headers;
+    const headers = responseContext.response.headers;
     const cdnCacheControl = headers.get(ResponseHeaders.CDN_CACHE_CONTROL) || '';
 
     const maxAge = parseInt(cdnCacheControl.replace(/\D/g, ''), 0);
@@ -66,11 +66,11 @@ export async function put(requestCtx: RequestCtx, responseCtx: ResponseCtx, buck
 /**
  * Looks up a saved response by object key.
  *
- * @param requestCtx the request context.
+ * @param requestContext the request context.
  * @param bucket the R2 bucket.
  * @param objectKey the object key to be matched.
  */
-export async function match(requestCtx: RequestCtx, bucket: R2Bucket, objectKey: string): Promise<Response | undefined> {
+export async function match(requestContext: RequestContext, bucket: R2Bucket, objectKey: string): Promise<Response | undefined> {
     let response: Response | undefined;
 
     // Since we produce this result from the request, we don't need to strictly use an R2Range
@@ -79,7 +79,7 @@ export async function match(requestCtx: RequestCtx, bucket: R2Bucket, objectKey:
     let file: R2Object | R2ObjectBody | null | undefined;
 
     // Range handling
-    const request = requestCtx.request;
+    const request = requestContext.request;
     const rangeHeader = request.headers.get(RequestHeaders.RANGE);
     if (rangeHeader) {
         file = await bucket.head(objectKey);

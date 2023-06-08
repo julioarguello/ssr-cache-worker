@@ -1,5 +1,5 @@
 import {Router} from 'itty-router';
-import {RequestCtxBuilder} from './context/builders/request-ctx-builder';
+import {RequestContextBuilder} from './context/builders/request-context-builder';
 import {CacheHandler} from './handlers/cache-handler';
 import {ResponseHeaders} from './common/response-headers';
 import {versions} from "./version/versions";
@@ -50,13 +50,13 @@ const ssrRenderer = {
         if (allowedMethods.indexOf(request.method) === -1) return new Response(
             'Method Not Allowed', {status: 405});
 
-        const requestCtx = new RequestCtxBuilder(request, env, event) //
+        const requestContext = new RequestContextBuilder(request, env, event) //
             .setRequest() //
             .build();
 
         let response;
         try {
-            response = (await cacheHandler.handle(requestCtx))?.response;
+            response = (await cacheHandler.handle(requestContext))?.response;
         } catch (err) {
             const error = <Error>err;
             const stack = JSON.stringify(error.stack);
@@ -94,8 +94,6 @@ const tagRenderer = {
      * @see [FetchEvent](https://developers.cloudflare.com/workers/runtime-apis/fetch-event#syntax-module-worker)
      */
     async fetch(request: Request, env: Env, event: ExecutionContext) {
-
-        console.log(request.url)
 
         // @ts-ignore
         const {tag, operation} = request.params;

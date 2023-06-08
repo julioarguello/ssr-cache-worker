@@ -7,11 +7,10 @@
 export const parseEdgeControlHeader = (str: string) => <Record<string, string>>(str || '')//
     .split(',')//
     .map(v => v.split('=')) //
-    .reduce((acc, v) => {
+    .reduce((acc: Record<string, any>, v) => {
         let name = v[0].trim();
         let value = v.length === 2 ? v[1].trim() : '';
 
-        // @ts-ignore
         acc[decodeURIComponent(name)] = decodeURIComponent(value);
         return acc;
     }, {});

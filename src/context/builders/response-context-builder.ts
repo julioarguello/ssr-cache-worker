@@ -1,14 +1,14 @@
-import {RequestCtx} from '../beans/request-ctx';
-import {RenderingMode, ResponseCtx} from '../beans/response-ctx';
+import {RequestContext} from '../beans/request-context';
+import {RenderingMode, ResponseContext} from '../beans/response-context';
 import {Handler} from "../../handlers/handler";
-import {VersionCtxBuilder} from "./version-ctx-builder";
-import {VersionCtx} from "../beans/version-ctx";
+import {VersionContextBuilder} from "./version-context-builder";
+import {VersionContext} from "../beans/version-context";
 import {ResponseHeaders} from "../../common/response-headers";
 
 /**
  * Builds response contexts from a http response.
  */
-export class ResponseCtxBuilder {
+export class ResponseContextBuilder {
     public headers: Headers | undefined;
     public response: Response;
     public source: Handler;
@@ -16,22 +16,22 @@ export class ResponseCtxBuilder {
     public startTime: Date;
     public endTime: Date;
     public duration: number;
-    public versionContext!: VersionCtx;
-    public readonly requestContext: RequestCtx;
+    public versionContext!: VersionContext;
+    public readonly requestContext: RequestContext;
 
     /**
      * Constructs a `ResponseContextBuilder` given the associated request context and http response.
      *
-     * @param requestCtx {RequestCtx} the request context.
+     * @param requestContext {RequestContext} the request context.
      * @param response {Response} the response.
      * @param source the handler which fetched the response.
      */
-    constructor(requestCtx: RequestCtx, response: Response, source: Handler) {
-        if (!requestCtx) throw 'invalid request context';
+    constructor(requestContext: RequestContext, response: Response, source: Handler) {
+        if (!requestContext) throw 'invalid request context';
         if (!response) throw 'invalid response';
         if (!source) throw 'invalid source';
 
-        this.requestContext = requestCtx;
+        this.requestContext = requestContext;
         this.response = response;
         this.source = source;
         this.renderingMode = RenderingMode.SSR;
@@ -47,7 +47,7 @@ export class ResponseCtxBuilder {
      *
      * See https://sap.github.io/spartacus-docs/server-side-rendering-optimization/#configuring-the-ssr-optimization-engine
      *
-     * @return {ResponseCtxBuilder} `this`.
+     * @return {ResponseContextBuilder} `this`.
      */
     setRenderingMode() {
         const url = new URL(this.requestContext.request.url);
@@ -65,7 +65,7 @@ export class ResponseCtxBuilder {
     /**
      * Sets the response headers.
      *
-     * @return {ResponseCtxBuilder} this.
+     * @return {ResponseContextBuilder} this.
      */
     setHeaders() {
         if (!this.renderingMode) throw 'invalid rendering mode';
@@ -103,7 +103,7 @@ export class ResponseCtxBuilder {
     /**
      * Adapts the original response.
      *
-     * @return {ResponseCtxBuilder} `this`.
+     * @return {ResponseContextBuilder} `this`.
      */
     setResponse() {
         this.response = new Response(this.response.body, {
@@ -121,7 +121,7 @@ export class ResponseCtxBuilder {
      * @param startTime the start time.
      * @param endTime the end time.
      *
-     * @return {ResponseCtxBuilder} `this`.
+     * @return {ResponseContextBuilder} `this`.
      */
     setDuration(startTime: Date, endTime: Date) {
         this.startTime = startTime;
@@ -135,10 +135,10 @@ export class ResponseCtxBuilder {
     /**
      * Set the resource versions.
      *
-     * @return {ResponseCtxBuilder} `this`.
+     * @return {ResponseContextBuilder} `this`.
      */
     async setVersions() {
-        const versionContextBuilder = new VersionCtxBuilder(this.requestContext, this.response)
+        const versionContextBuilder = new VersionContextBuilder(this.requestContext, this.response)
         await versionContextBuilder.setLive();
         this.versionContext = versionContextBuilder //
             .setPersisted() //
@@ -153,9 +153,9 @@ export class ResponseCtxBuilder {
     /**
      * Builds a response context.
      *
-     * @returns {ResponseCtx} the response context.
+     * @returns {ResponseContext} the response context.
      */
     build() {
-        return new ResponseCtx(this);
+        return new ResponseContext(this);
     }
 }

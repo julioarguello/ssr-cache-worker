@@ -1,18 +1,19 @@
-import {VersionCtx} from '../beans/version-ctx';
-import {RequestCtx} from '../beans/request-ctx';
+import {VersionContext} from '../beans/version-context';
+import {RequestContext} from '../beans/request-context';
 import * as Versions from '../../version/versions';
 import * as Utils from '../../common/utils';
+import {ResponseHeaders} from "../../common/response-headers";
 
 /**
  * Builds version contexts from a request context.
  */
-export class VersionCtxBuilder {
+export class VersionContextBuilder {
     persisted!: Record<string, number>;
     live!: Record<string, number>;
     diff!: Record<string, number>;
     rDiff!: Record<string, number>;
     expired!: boolean;
-    private readonly requestContext: RequestCtx;
+    private readonly requestContext: RequestContext;
     private readonly response: Response;
 
     /**
@@ -22,7 +23,7 @@ export class VersionCtxBuilder {
      * @param response the http response (do note this builder might be called
      * without a response context set into DPC context yet)
      */
-    constructor(requestContext: RequestCtx, response: Response) {
+    constructor(requestContext: RequestContext, response: Response) {
         if (!requestContext.request) throw 'invalid request context';
         if (!requestContext.env) throw 'invalid environment';
 
@@ -33,7 +34,7 @@ export class VersionCtxBuilder {
     /**
      * Sets the persisted version for a given response.
      *
-     * @returns {VersionCtxBuilder} `this`.
+     * @returns {VersionContextBuilder} `this`.
      */
     setPersisted() {
         this.persisted = Versions.getPersistedVersion(this.response);
@@ -43,7 +44,7 @@ export class VersionCtxBuilder {
     /**
      * Sets the difference between persisted and live versions.
      *
-     * @returns {VersionCtxBuilder} `this`.
+     * @returns {VersionContextBuilder} `this`.
      */
     setDiff() {
         if (!this.live) throw 'invalid live version';
@@ -56,7 +57,7 @@ export class VersionCtxBuilder {
     /**
      * Sets the difference between live and persisted versions.
      *
-     * @returns {VersionCtxBuilder} `this`.
+     * @returns {VersionContextBuilder} `this`.
      */
     setRDiff() {
         // if (!this.persisted) throw 'invalid persisted version';
@@ -69,7 +70,7 @@ export class VersionCtxBuilder {
     /**
      * Sets the live version for a given response.
      *
-     * @returns {VersionCtxBuilder} `this`.
+     * @returns {VersionContextBuilder} `this`.
      */
     async setLive() {
         if (!this.requestContext.request) throw 'invalid request';
@@ -85,21 +86,29 @@ export class VersionCtxBuilder {
     /**
      * Sets whether the persisted version is expired.
      *
-     * @returns {VersionCtxBuilder} `this`.
+     * @returns {VersionContextBuilder} `this`.
      */
     setExpired() {
         if (!this.diff) throw 'invalid versions diff';
 
         this.expired = Boolean(this.persisted) && (Object.keys(this.diff).length !== 0);
+
+        if (!this.expired && this.response.headers.has(ResponseHeaders.EXPIRES)) {
+            const now = new Date();
+            const expires = new Date(this.response.headers.get(ResponseHeaders.EXPIRES) || now);
+
+            this.expired = (expires.getTime() < now.getTime());
+        }
+
         return this;
     }
 
     /**
      * Builds the version context.
      *
-     * @returns {VersionCtx}  the version context.
+     * @returns {VersionContext}  the version context.
      */
     build() {
-        return new VersionCtx(this);
+        return new VersionContext(this);
     }
 }
