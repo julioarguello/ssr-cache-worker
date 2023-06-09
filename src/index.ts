@@ -17,7 +17,7 @@ router.all('/ssr/tags/:tag/:operation',
     async (request: Request, env: Env, event: ExecutionContext) => tagRenderer.fetch(request, env, event));
 
 /* Forbidden paths that cannot be cached */
-router.all('/[a-z]{2}/(cart|order|login|my-account)*',
+router.all('/[a-z]{2}/(cart|order|login|my-account|wishlist)*',
     async (request: Request, env: Env, event: ExecutionContext) => dftRenderer.fetch(request, env, event));
 
 /* This is the last route we define, it will match anything that hasn't hit a route we've defined */

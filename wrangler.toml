@@ -72,15 +72,18 @@ R2_PREFIX = "/001"
 
 [env.wow-s1]
 name = "s1-www-ssr-cache-v2"
-routes = ["s1-www.wowconcept.com/es", "s1-www.wowconcept.com/es/*"]
+routes = ["s1-www.wowconcept.com/es", "s1-www.wowconcept.com/es/*", "s1-www.wowconcept.com/en", "s1-www.wowconcept.com/en/*", "s1-www.wowconcept.com/ssr/tags*"]
 analytics_engine_datasets = [
     { binding = "SSR_CACHE", dataset = "ssr_cache_s1_v1" }
+]
+durable_objects.bindings = [
+    { class_name = "Counter", name = "COUNTER" }
 ]
 
 [[env.wow-s1.r2_buckets]]
 binding = "R2_BUCKET"
-bucket_name = "ssr"         # Set this to your R2 bucket name. Required
-preview_bucket_name = "ssr" # Set this to your preview R2 bucket name. Can be equal to bucket_name. Optional
+bucket_name = "ssr-s1"         # Set this to your R2 bucket name. Required
+preview_bucket_name = "ssr-s1" # Set this to your preview R2 bucket name. Can be equal to bucket_name. Optional
 
 [env.wow-s1.vars]
 ORIGIN_HOST = "s1-www.wowconcept.com"
@@ -88,8 +91,9 @@ ORIGIN_PROTOCOL = "https"
 ORIGIN_PORT = "443"
 FORCED_EDGE_CACHE_CONTROL = "public, max-age=28800"
 TRACKING_PARAMS = "gclid,gclsrc,fbclid,utm_source,utm_medium,utm_campaign,utm_content"
-SSR_RETRIES = "7000,10000,10000,20000"
-R2_PREFIX = "/001"
+SSR_RETRIES = "1000,1000,2000,2000"
+R2_PREFIX = ""
+
 
 [env.wow-p1]
 name = "p1-www-ssr-cache-v2"
@@ -98,7 +102,7 @@ analytics_engine_datasets = [
     { binding = "SSR_CACHE", dataset = "ssr_cache_p1_v1" }
 ]
 durable_objects.bindings = [
-    { class_name = "Counter", name = "COUNTER"}
+    { class_name = "Counter", name = "COUNTER" }
 ]
 
 [[migrations]]
@@ -107,8 +111,8 @@ new_classes = ["Counter"]
 
 [[env.wow-p1.r2_buckets]]
 binding = "R2_BUCKET"
-bucket_name = "ssr"         # Set this to your R2 bucket name. Required
-preview_bucket_name = "ssr" # Set this to your preview R2 bucket name. Can be equal to bucket_name. Optional
+bucket_name = "ssr-p1"         # Set this to your R2 bucket name. Required
+preview_bucket_name = "ssr-p1" # Set this to your preview R2 bucket name. Can be equal to bucket_name. Optional
 
 [env.wow-p1.vars]
 ORIGIN_HOST = "wowconcept.com"
