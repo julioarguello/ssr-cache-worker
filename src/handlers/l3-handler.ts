@@ -1,12 +1,9 @@
 import {AbstractHandler} from './abstract-handler';
-import {RequestCtx} from '../context/beans/request-ctx'
-import {ResponseCtx, CacheLevel} from '../context/beans/response-ctx'
+import {RequestContext} from '../context/beans/request-context'
+import {CacheLevel, ResponseContext} from '../context/beans/response-context'
 
 /**
  * Cache level 3 implementation.
- *
- * @param {RequestCtx} requestCtx the http request context.
- * @return {Promise<ResponseCtx>} a promise to the response context.
  *
  * @see [FetchEvent](https://developers.cloudflare.com/workers/runtime-apis/fetch-event#syntax-module-worker)
  */
@@ -24,20 +21,20 @@ export class L3Handler extends AbstractHandler {
     /**
      * Fetches the response from origin.
      *
-     * @param requestCtx the request context.
+     * @param requestContext the request context.
      */
-    protected async doFetch(requestCtx: RequestCtx) {
+    protected async doFetch(requestContext: RequestContext) {
 
-        return await fetch(requestCtx.request.url, requestCtx.request);
+        return await fetch(requestContext.request.url, requestContext.request);
     }
 
     /**
      * This implementation is unable to cache anything, cache is managed in origin. So it always returns false.
      *
-     * @param {RequestCtx} requestCtx the request context.
-     * @param {ResponseCtx} responseCtx the response context.
+     * @param {RequestContext} requestContext the request context.
+     * @param {ResponseContext} responseContext the response context.
      */
-    protected doCache(requestCtx: RequestCtx, responseCtx: ResponseCtx) {
+    protected doCache(requestContext: RequestContext, responseContext: ResponseContext) {
         return false;
     }
 }

@@ -1,10 +1,10 @@
-import {RequestCtx} from '../beans/request-ctx';
-import {DEFAULTS, Env} from "../../env";
+import {RequestContext} from '../beans/request-context';
+import {DEFAULTS, Env} from "../../common/env";
 
 /**
  * Builds request contexts from a http request.
  */
-export class RequestCtxBuilder {
+export class RequestContextBuilder {
     request: Request;
     readonly env: any;
     event: ExecutionContext;
@@ -27,7 +27,7 @@ export class RequestCtxBuilder {
     /**
      * Adapts the original request by setting right host and removing silly params.
      *
-     * @return {RequestCtxBuilder} `this`.
+     * @return {RequestContextBuilder} `this`.
      */
     setRequest() {
         const originUrl = new URL(this.request.url);
@@ -53,9 +53,9 @@ export class RequestCtxBuilder {
     /**
      * Builds a request context.
      *
-     * @returns {RequestCtx} the request context.
+     * @returns {RequestContext} the request context.
      */
     build() {
-        return new RequestCtx(this);
+        return new RequestContext(this);
     }
 }

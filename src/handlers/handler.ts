@@ -1,5 +1,5 @@
-import {RequestCtx} from '../context/beans/request-ctx'
-import {ResponseCtx} from '../context/beans/response-ctx'
+import {RequestContext} from '../context/beans/request-context'
+import {ResponseContext} from '../context/beans/response-context'
 
 /**
  * The Handler interface declares a method for building the chain of handlers.
@@ -22,9 +22,9 @@ export interface Handler {
     /**
      * Handle a given request.
      *
-     * @param {RequestCtx} requestCtx the request context.
+     * @param {RequestContext} requestContext the request context.
      *
-     * @return {Promise<ResponseCtx>} a promise to the response context.
+     * @return {Promise<ResponseContext>} a promise to the response context.
      */
-    handle(requestCtx: RequestCtx): Promise<ResponseCtx | undefined>;
+    handle(requestContext: RequestContext): Promise<ResponseContext | undefined>;
 }

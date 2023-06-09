@@ -1,7 +1,7 @@
 /**
  *  Environment specific bindings.
  */
-export interface Env extends ExecutionContext{
+export interface Env extends ExecutionContext {
     R2_BUCKET: R2Bucket,
     ORIGIN_HOST: string,
     ORIGIN_PROTOCOL: string,
@@ -10,7 +10,8 @@ export interface Env extends ExecutionContext{
     FORCED_EDGE_CACHE_CONTROL: string,
     SSR_CACHE: any,
     SSR_RETRIES: string,
-    R2_PREFIX: string
+    R2_PREFIX: string,
+    COUNTER: DurableObjectNamespace
 }
 
 /**
