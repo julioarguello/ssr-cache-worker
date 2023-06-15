@@ -84,7 +84,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "SELECT\n    intDiv(toUInt32(timestamp), 300) * 300 AS t, \n    index1 as handler,    \n    blob4 AS cf_cache_status,\n    SUM(_sample_interval * double2) / SUM(_sample_interval) AS avg_duration\nFROM {{datasetId}}\nWHERE timestamp > NOW() - INTERVAL '1' HOUR AND handler = 'L3'\nGROUP BY t, handler, cf_cache_status\nORDER BY t, handler, cf_cache_status\nFORMAT JSONEachRow"
+					"raw": "SELECT\n    intDiv(toUInt32(timestamp), 60) * 300 AS t, \n    index1 as handler,    \n    blob4 AS cf_cache_status,\n    SUM(_sample_interval * double2) / SUM(_sample_interval) AS avg_duration\nFROM {{datasetId}}\nWHERE timestamp > NOW() - INTERVAL '1' HOUR AND handler = 'L3'\nGROUP BY t, handler, cf_cache_status\nORDER BY t, handler, cf_cache_status\nFORMAT JSONEachRow"
 				},
 				"url": "{{baseUrl}}/client/v4/accounts/{{accountId}}/analytics_engine/sql"
 			},
