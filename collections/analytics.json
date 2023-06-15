@@ -74,6 +74,23 @@
 			"response": []
 		},
 		{
+			"name": "L3 duration",
+			"id": "3152295b-4aca-46e1-b583-9b025142ee39",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "SELECT\n    timestamp,\n    index1 as handler,\n    blob4 AS cf_cache_status,\n    blob1 AS cf_ray,\n    blob3 AS rendering_mode,\n    blob5 AS cf_cache_source,\n    blob9 AS colo,\n    double1 AS attempt,\n    double2 AS duration\nFROM {{datasetId}}\nWHERE timestamp > NOW() - INTERVAL '1' HOUR AND\n    position('SCH6FAC06002NOW001' IN blob2) > 0\nORDER BY timestamp ASC, cf_ray ASC, handler ASC\nFORMAT JSONEachRow"
+				},
+				"url": "{{baseUrl}}/client/v4/accounts/{{accountId}}/analytics_engine/sql"
+			},
+			"response": []
+		},
+		{
 			"name": "Stats by interval",
 			"id": "6599f596-a38b-46c2-92bd-55102a89118a",
 			"protocolProfileBehavior": {
