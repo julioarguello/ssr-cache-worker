@@ -74,7 +74,7 @@
 			"response": []
 		},
 		{
-			"name": "L3 duration",
+			"name": "L3 status by interval",
 			"id": "3152295b-4aca-46e1-b583-9b025142ee39",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
