@@ -57,7 +57,7 @@
 			"response": []
 		},
 		{
-			"name": "Select Interval Records",
+			"name": "Select Records by Interval and URL",
 			"id": "2d2e6601-a943-4a13-8d19-3465b991f697",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
