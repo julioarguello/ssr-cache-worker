@@ -123,6 +123,18 @@
 				"url": "{{baseUrl}}/client/v4/accounts/{{accountId}}/analytics_engine/sql"
 			},
 			"response": []
+		},
+		{
+			"name": "New Request",
+			"id": "792489ab-9e3a-4393-9d5a-89fb2d3e0f05",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
 		}
 	],
 	"auth": {
