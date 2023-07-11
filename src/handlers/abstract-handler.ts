@@ -185,11 +185,13 @@ export abstract class AbstractHandler implements Handler {
                 city,
                 region,
                 country,
-                colo
+                colo,
+                requestContext.request.headers.get(RequestHeaders.USER_AGENT), // 20230711
             ],
             'doubles': [
                 requestContext.attempt, //
                 responseContext?.duration, //
+                responseContext?.response.status // 20230711
             ],
             'indexes': [
                 this.getName(),

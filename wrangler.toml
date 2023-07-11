@@ -97,7 +97,7 @@ R2_PREFIX = ""
 
 [env.wow-p1]
 name = "p1-www-ssr-cache-v2"
-routes = ["wowconcept.com/es/product/LAC2SNE33734PCM001/test-ssr*", "wowconcept.com/ssr/tags*"]
+routes = ["wowconcept.com/es", "wowconcept.com/es/*", "wowconcept.com/en", "wowconcept.com/en/*", "wowconcept.com/ssr/tags*"]
 analytics_engine_datasets = [
     { binding = "SSR_CACHE", dataset = "ssr_cache_p1_v1" }
 ]
