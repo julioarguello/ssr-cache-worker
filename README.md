@@ -310,6 +310,57 @@ FORMAT JSONEachRow
 {"t":"1684145400","handler":"L3","cf_cache_status":"MISS","avg_duration":115.75}
 ```
 
+#### [Grafana Dashboard](https://julioarguello.grafana.net/goto/JEKyK7C4g?orgId=1)
+
+> An up-to-date export of the Grafana dashboard is available at [repository](https://github.com/julioarguello/repo/blob/main/monitoring/grafana/WoW%20SSR-1689082912235.json).
+
+
+##### Filters
+
+Grafana dashboard can be filtered out by:
+- **Rendering mode**: [`SSR`, `CSR`] 
+- **Cache status**: [`HIT`, `EXPIRED`, `MISS`, `BYPASS`, `DYNAMIC`]
+- **Source**: [`L1`, `L2`, `L3`]
+- **Country**: [`ES`, `FR`...]
+- **User agent**: [`SSRWarmUpCrawler/1.0 (Gitlab; Seidor)`]
+- **Colo**: [`MAD`, `BCN`...]
+- **Worker Attempt**: [`1`, `2`, `3`, `4`...]
+- **Http Status**: [`200`, `404`...]
+
+![SAP Commerce SSR](./doc/img/grafana/Filters.png "Grafana Filters")
+
+##### Summary
+
+There are top levels visualizations for:
+- HIT ratio
+- Source
+- Cloudflare colos
+- Worker attempt
+
+![SAP Commerce SSR](./doc/img/grafana/Summary.png "Grafana Summary")
+
+##### HIT Ratio
+
+HIT ratio is split in two graphs:
+1. Timeline with the percentage of requests per cache status.
+2. Timeline with number of requests per cache status and average response time.
+
+![SAP Commerce SSR](./doc/img/grafana/Hit.png "Grafana Hit Ratio")
+
+##### Handler Ratio
+
+Handler ratio is split in two graphs:
+1. Timeline with the percentage of requests per source handler.
+2. Timeline with number of requests per source handler and average response time.
+
+![SAP Commerce SSR](./doc/img/grafana/Handler.png "Grafana Handler Ratio")
+
+##### Table
+
+Detailed table with raw information at analytics engine.
+
+![SAP Commerce SSR](./doc/img/grafana/Table.png "Grafana Table")
+
 ## Deployment
 
 ```shell
