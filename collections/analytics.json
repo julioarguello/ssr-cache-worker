@@ -142,7 +142,7 @@
 			"response": []
 		},
 		{
-			"name": "Select aal",
+			"name": "Select all",
 			"id": "90f1d901-97c6-4170-8506-2401275b621e",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
