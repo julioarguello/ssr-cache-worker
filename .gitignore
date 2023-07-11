@@ -169,4 +169,5 @@ dist
 
 .dev.vars
 *.json
+!monitoring/grafana/*
 .DS_Store

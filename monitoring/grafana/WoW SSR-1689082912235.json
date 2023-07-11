@@ -1,0 +1,1973 @@
+{
+  "__inputs": [
+    {
+      "name": "DS_WOW_SSR",
+      "label": "WoW SSR",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "vertamedia-clickhouse-datasource",
+      "pluginName": "Altinity plugin for ClickHouse"
+    }
+  ],
+  "__elements": {},
+  "__requires": [
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "10.0.2-cloud.1.94a6f396"
+    },
+    {
+      "type": "panel",
+      "id": "piechart",
+      "name": "Pie chart",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "table",
+      "name": "Table",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "timeseries",
+      "name": "Time series",
+      "version": ""
+    },
+    {
+      "type": "datasource",
+      "id": "vertamedia-clickhouse-datasource",
+      "name": "Altinity plugin for ClickHouse",
+      "version": "2.5.3"
+    }
+  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 15,
+      "panels": [],
+      "title": "Summary",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "vertamedia-clickhouse-datasource",
+        "uid": "${DS_WOW_SSR}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": [],
+          "unit": "none"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "BYPASS"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "HIT"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "MISS"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "DYNAMIC"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "EXPIRED"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 6,
+        "x": 0,
+        "y": 1
+      },
+      "id": 5,
+      "options": {
+        "displayLabels": [
+          "percent"
+        ],
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true,
+          "values": [
+            "percent"
+          ]
+        },
+        "pieType": "donut",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "asc"
+        }
+      },
+      "pluginVersion": "10.0.2-cloud.1.94a6f396",
+      "targets": [
+        {
+          "datasource": {
+            "type": "vertamedia-clickhouse-datasource",
+            "uid": "${DS_WOW_SSR}"
+          },
+          "dateTimeColDataType": "timestamp",
+          "dateTimeType": "DATETIME",
+          "datetimeLoading": false,
+          "extrapolate": true,
+          "format": "table",
+          "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+          "intervalFactor": 1,
+          "query": "SELECT\n    blob4 AS cf_cache_status,\n    count()\nFROM ssr_cache_p1_v1\n\nWHERE\n    $timeFilter\n    and index1 = 'L0'\n    and ($colo = 'all' OR blob9 IN ($colo))\n    and toUInt32(double1) IN ($attempt)\n    and ($country = 'all' OR blob8 in ($country))\n    and ($renderingmode = 'all' OR blob3 in ($renderingmode))\n    and ($status = 'all' OR blob4 in ($status))\n    and ($source = 'all' OR blob5 in ($source))\n    and ($useragent = 'all' OR blob10 IN($useragent) OR length(blob10) = 0)\n    and toUInt32(double3) IN ($httpstatus)\nGROUP BY cf_cache_status\n",
+          "rawQuery": "SELECT\n    blob4 AS cf_cache_status,\n    count()\nFROM ssr_cache_p1_v1\n\nWHERE\n    timestamp >= toDateTime(1689039483) AND timestamp <= toDateTime(1689082683)\n    and index1 = 'L0'\n    and ('all' = 'all' OR blob9 IN ('all'))\n    and toUInt32(double1) IN (0,1,2,3,4)\n    and ('ES' = 'all' OR blob8 in ('ES'))\n    and ('all' = 'all' OR blob3 in ('all'))\n    and ('all' = 'all' OR blob4 in ('all'))\n    and ('all' = 'all' OR blob5 in ('all'))\n    and ('all' = 'all' OR blob10 IN('all') OR length(blob10) = 0)\n    and toUInt32(double3) IN (200)\nGROUP BY cf_cache_status",
+          "refId": "A",
+          "round": "0s",
+          "skip_comments": true
+        }
+      ],
+      "title": "HIT ratio",
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "vertamedia-clickhouse-datasource",
+        "uid": "${DS_WOW_SSR}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "fixed"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": [],
+          "unit": "none"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "L1"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "L2"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "L3"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 6,
+        "x": 6,
+        "y": 1
+      },
+      "id": 8,
+      "options": {
+        "displayLabels": [
+          "percent"
+        ],
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true,
+          "values": []
+        },
+        "pieType": "donut",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "10.0.2-cloud.1.94a6f396",
+      "targets": [
+        {
+          "datasource": {
+            "type": "vertamedia-clickhouse-datasource",
+            "uid": "${DS_WOW_SSR}"
+          },
+          "dateTimeColDataType": "timestamp",
+          "dateTimeType": "DATETIME",
+          "datetimeLoading": false,
+          "extrapolate": true,
+          "format": "table",
+          "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+          "intervalFactor": 1,
+          "query": "SELECT\n    blob5 AS cf_cache_source,\n    count() AS value\nFROM ssr_cache_p1_v1\n\nWHERE\n    $timeFilter\n    and index1 = 'L0'\n    and ($colo = 'all' OR blob9 IN ($colo))\n    and toUInt32(double1) IN ($attempt)\n    and ($country = 'all' OR blob8 in ($country))\n    and ($renderingmode = 'all' OR blob3 in ($renderingmode))\n    and ($status = 'all' OR blob4 in ($status))\n    and ($source = 'all' OR blob5 in ($source))\n    and ($useragent = 'all' OR blob10 IN($useragent) OR length(blob10) = 0)\n    and toUInt32(double3) IN ($httpstatus)\n    \nGROUP BY cf_cache_source\n\nORDER BY cf_cache_source ASC\n",
+          "rawQuery": "SELECT\n    blob5 AS cf_cache_source,\n    count() AS value\nFROM ssr_cache_p1_v1\n\nWHERE\n    timestamp >= toDateTime(1689039489) AND timestamp <= toDateTime(1689082689)\n    and index1 = 'L0'\n    and ('all' = 'all' OR blob9 IN ('all'))\n    and toUInt32(double1) IN (0,1,2,3,4)\n    and ('ES' = 'all' OR blob8 in ('ES'))\n    and ('all' = 'all' OR blob3 in ('all'))\n    and ('all' = 'all' OR blob4 in ('all'))\n    and ('all' = 'all' OR blob5 in ('all'))\n    and ('all' = 'all' OR blob10 IN('all') OR length(blob10) = 0)\n    and toUInt32(double3) IN (200)\n    \nGROUP BY cf_cache_source\n\nORDER BY cf_cache_source ASC",
+          "refId": "colos",
+          "round": "0s",
+          "skip_comments": true
+        }
+      ],
+      "title": "Sources",
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "vertamedia-clickhouse-datasource",
+        "uid": "${DS_WOW_SSR}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "fixed"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": [],
+          "unit": "none"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "MAD"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "purple",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "BCN"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "purple",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 6,
+        "x": 12,
+        "y": 1
+      },
+      "id": 6,
+      "options": {
+        "displayLabels": [
+          "percent"
+        ],
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "pieType": "donut",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "10.0.2-cloud.1.94a6f396",
+      "targets": [
+        {
+          "datasource": {
+            "type": "vertamedia-clickhouse-datasource",
+            "uid": "${DS_WOW_SSR}"
+          },
+          "dateTimeColDataType": "timestamp",
+          "dateTimeType": "DATETIME",
+          "datetimeLoading": false,
+          "extrapolate": true,
+          "format": "table",
+          "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+          "intervalFactor": 1,
+          "query": "SELECT\n    blob9 AS colo,\n    count() AS value\nFROM ssr_cache_p1_v1\n\nWHERE\n    $timeFilter\n    and index1 = 'L0'\n    and ($colo = 'all' OR blob9 IN ($colo))\n    and toUInt32(double1) IN ($attempt)\n    and ($country = 'all' OR blob8 in ($country))\n    and ($renderingmode = 'all' OR blob3 in ($renderingmode))\n    and ($status = 'all' OR blob4 in ($status))\n    and ($source = 'all' OR blob5 in ($source))\n    and ($useragent = 'all' OR blob10 IN($useragent) OR length(blob10) = 0)\n    and toUInt32(double3) IN ($httpstatus)\nGROUP BY colo\n\nORDER BY value DESC\n",
+          "rawQuery": "SELECT\n    blob9 AS colo,\n    count() AS value\nFROM ssr_cache_p1_v1\n\nWHERE\n    timestamp >= toDateTime(1689039497) AND timestamp <= toDateTime(1689082697)\n    and index1 = 'L0'\n    and ('all' = 'all' OR blob9 IN ('all'))\n    and toUInt32(double1) IN (0,1,2,3,4)\n    and ('ES' = 'all' OR blob8 in ('ES'))\n    and ('all' = 'all' OR blob3 in ('all'))\n    and ('all' = 'all' OR blob4 in ('all'))\n    and ('all' = 'all' OR blob5 in ('all'))\n    and ('all' = 'all' OR blob10 IN('all') OR length(blob10) = 0)\n    and toUInt32(double3) IN (200)\nGROUP BY colo\n\nORDER BY value DESC",
+          "refId": "colos",
+          "round": "0s",
+          "skip_comments": true
+        }
+      ],
+      "title": "Colos",
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "vertamedia-clickhouse-datasource",
+        "uid": "${DS_WOW_SSR}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "fixed"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": [],
+          "unit": "none"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "MAD"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "purple",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "BCN"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "purple",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "0"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "1"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "2"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "__systemRef": "hideSeriesFrom",
+            "matcher": {
+              "id": "byNames",
+              "options": {
+                "mode": "exclude",
+                "names": [
+                  "value"
+                ],
+                "prefix": "All except:",
+                "readOnly": true
+              }
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": true
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "3"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "4"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 6,
+        "x": 18,
+        "y": 1
+      },
+      "id": 12,
+      "options": {
+        "displayLabels": [
+          "percent"
+        ],
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "pieType": "donut",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "10.0.2-cloud.1.94a6f396",
+      "targets": [
+        {
+          "datasource": {
+            "type": "vertamedia-clickhouse-datasource",
+            "uid": "${DS_WOW_SSR}"
+          },
+          "dateTimeColDataType": "timestamp",
+          "dateTimeType": "DATETIME",
+          "datetimeLoading": false,
+          "extrapolate": true,
+          "format": "table",
+          "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+          "intervalFactor": 1,
+          "query": "SELECT\n    format('{}', double1) AS attempt,\n    count() AS value\nFROM ssr_cache_p1_v1\n\nWHERE\n    $timeFilter\n    and index1 = 'L0'\n    and ($colo = 'all' OR blob9 IN ($colo))\n    and toUInt32(double1) IN ($attempt)\n    and ($country = 'all' OR blob8 in ($country))\n    and ($renderingmode = 'all' OR blob3 in ($renderingmode))\n    and ($status = 'all' OR blob4 in ($status))\n    and ($source = 'all' OR blob5 in ($source))\n    and ($useragent = 'all' OR blob10 IN($useragent) OR length(blob10) = 0)\n    and toUInt32(double3) IN ($httpstatus)\nGROUP BY attempt\n\nORDER BY value DESC\n",
+          "rawQuery": "SELECT\n    format('{}', double1) AS attempt,\n    count() AS value\nFROM ssr_cache_p1_v1\n\nWHERE\n    timestamp >= toDateTime(1689039506) AND timestamp <= toDateTime(1689082706)\n    and index1 = 'L0'\n    and ('all' = 'all' OR blob9 IN ('all'))\n    and toUInt32(double1) IN (0,1,2,3,4)\n    and ('ES' = 'all' OR blob8 in ('ES'))\n    and ('all' = 'all' OR blob3 in ('all'))\n    and ('all' = 'all' OR blob4 in ('all'))\n    and ('all' = 'all' OR blob5 in ('all'))\n    and ('all' = 'all' OR blob10 IN('all') OR length(blob10) = 0)\n    and toUInt32(double3) IN (200)\nGROUP BY attempt\n\nORDER BY value DESC",
+          "refId": "attempts",
+          "round": "0s",
+          "skip_comments": true
+        }
+      ],
+      "title": "Attempts",
+      "type": "piechart"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 10
+      },
+      "id": 14,
+      "panels": [],
+      "title": "HIT ratio",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "vertamedia-clickhouse-datasource",
+        "uid": "${DS_WOW_SSR}"
+      },
+      "description": "Correlates average response time and count of requests",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 70,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "percent"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 0,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "3"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "4"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "5"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "05-DYNAMIC"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "04-BYPASS"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "03-MISS"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "02-EXPIRED"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "01-HIT"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 11
+      },
+      "hideTimeOverride": false,
+      "id": 11,
+      "interval": "300s",
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "vertamedia-clickhouse-datasource",
+            "uid": "${DS_WOW_SSR}"
+          },
+          "dateTimeColDataType": "timestamp",
+          "dateTimeType": "DATETIME",
+          "datetimeLoading": false,
+          "extrapolate": true,
+          "format": "time_series",
+          "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+          "hide": false,
+          "intervalFactor": 1,
+          "query": "SELECT\n    $timeSeries AS t,\n    if(blob4 = 'HIT', '01-HIT', if(blob4 = 'EXPIRED', '02-EXPIRED', if(blob4 = 'MISS', '03-MISS', if(blob4 = 'BYPASS', '04-BYPASS', if(blob4 = 'DYNAMIC', '05-DYNAMIC', '00-N/A'))))) AS metric,\n    count()\nFROM ssr_cache_p1_v1\n\nWHERE\n    $timeFilter\n    and index1 = 'L0'\n    and($colo = 'all' OR blob9 IN ($colo))\n    and toUInt32(double1) IN ($attempt)\n    and($country = 'all' OR blob8 in ($country))\n    and ($renderingmode = 'all' OR blob3 in ($renderingmode))\n    and($status = 'all' OR blob4 in ($status))\n    and($source = 'all' OR blob5 in ($source))\n    and($useragent = 'all' OR blob10 IN ($useragent) OR length(blob10) = 0)\n    and toUInt32(double3) IN ($httpstatus)\nGROUP BY\n    t,\n    metric\nORDER BY\n    metric desc",
+          "rawQuery": "SELECT\n    (intDiv(toUInt32(timestamp), 300) * 300) * 1000 AS t,\n    if(blob4 = 'HIT', '01-HIT', if(blob4 = 'EXPIRED', '02-EXPIRED', if(blob4 = 'MISS', '03-MISS', if(blob4 = 'BYPASS', '04-BYPASS', if(blob4 = 'DYNAMIC', '05-DYNAMIC', '00-N/A'))))) AS metric,\n    count()\nFROM ssr_cache_p1_v1\n\nWHERE\n    timestamp >= toDateTime(1689039555) AND timestamp <= toDateTime(1689082755)\n    and index1 = 'L0'\n    and('all' = 'all' OR blob9 IN ('all'))\n    and toUInt32(double1) IN (0,1,2,3,4)\n    and('ES' = 'all' OR blob8 in ('ES'))\n    and ('all' = 'all' OR blob3 in ('all'))\n    and('all' = 'all' OR blob4 in ('all'))\n    and('all' = 'all' OR blob5 in ('all'))\n    and('all' = 'all' OR blob10 IN ('all') OR length(blob10) = 0)\n    and toUInt32(double3) IN (200)\nGROUP BY\n    t,\n    metric\nORDER BY\n    metric desc",
+          "refId": "count",
+          "round": "0s",
+          "skip_comments": true
+        }
+      ],
+      "title": "HIT ratio",
+      "transformations": [],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "vertamedia-clickhouse-datasource",
+        "uid": "${DS_WOW_SSR}"
+      },
+      "description": "Correlates average response time and count of requests",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisGridShow": true,
+            "axisLabel": "Server response time (ms)",
+            "axisPlacement": "left",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "smooth",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 0.5,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 0,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/count_.*/"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "none"
+              },
+              {
+                "id": "custom.drawStyle",
+                "value": "bars"
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "right"
+              },
+              {
+                "id": "custom.stacking",
+                "value": {
+                  "group": "count",
+                  "mode": "normal"
+                }
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 85
+              },
+              {
+                "id": "custom.axisLabel",
+                "value": "Count"
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "duration_MISS"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#FF9830",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "duration_HIT"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "duration_BYPASS"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "count_EXPIRED"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "duration_EXPIRED"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "duration_DYNAMIC"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "count_BYPASS"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "count_HIT"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "count_MISS"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "count_DYNAMIC"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 19
+      },
+      "hideTimeOverride": false,
+      "id": 7,
+      "interval": "300s",
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "asc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "vertamedia-clickhouse-datasource",
+            "uid": "${DS_WOW_SSR}"
+          },
+          "dateTimeColDataType": "timestamp",
+          "dateTimeType": "DATETIME",
+          "datetimeLoading": false,
+          "extrapolate": true,
+          "format": "time_series",
+          "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+          "hide": false,
+          "intervalFactor": 1,
+          "query": "SELECT\n    $timeSeries AS t,\n    format('duration_{}', blob4) AS metric,\n    SUM(_sample_interval * double2) / SUM(_sample_interval) AS value\nFROM ssr_cache_p1_v1\n\nWHERE\n    $timeFilter\n    and index1 = 'L0'\n    and ($colo = 'all' OR blob9 IN ($colo))\n    and toUInt32(double1) IN ($attempt)\n    and ($country = 'all' OR blob8 in ($country))\n    and ($status = 'all' OR blob4 in ($status))\n    and ($source = 'all' OR blob5 in ($source))\n    and ($useragent = 'all' OR blob10 IN($useragent) OR length(blob10) = 0)\n    and toUInt32(double3) IN ($httpstatus)\nGROUP BY\n    t,\n    metric\nORDER BY t\n",
+          "rawQuery": "SELECT\n    (intDiv(toUInt32(timestamp), 300) * 300) * 1000 AS t,\n    format('duration_{}', blob4) AS metric,\n    SUM(_sample_interval * double2) / SUM(_sample_interval) AS value\nFROM ssr_cache_p1_v1\n\nWHERE\n    timestamp >= toDateTime(1689039579) AND timestamp <= toDateTime(1689082779)\n    and index1 = 'L0'\n    and ('all' = 'all' OR blob9 IN ('all'))\n    and toUInt32(double1) IN (0,1,2,3,4)\n    and ('ES' = 'all' OR blob8 in ('ES'))\n    and ('all' = 'all' OR blob4 in ('all'))\n    and ('all' = 'all' OR blob5 in ('all'))\n    and ('all' = 'all' OR blob10 IN('all') OR length(blob10) = 0)\n    and toUInt32(double3) IN (200)\nGROUP BY\n    t,\n    metric\nORDER BY t",
+          "refId": "duration",
+          "round": "0s",
+          "skip_comments": true
+        },
+        {
+          "datasource": {
+            "type": "vertamedia-clickhouse-datasource",
+            "uid": "${DS_WOW_SSR}"
+          },
+          "dateTimeColDataType": "timestamp",
+          "dateTimeType": "DATETIME",
+          "datetimeLoading": false,
+          "extrapolate": true,
+          "format": "time_series",
+          "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+          "hide": false,
+          "intervalFactor": 1,
+          "query": "SELECT\n    $timeSeries AS t,\n    format('count_{}', blob4) AS metric,\n    count()\nFROM ssr_cache_p1_v1\n\nWHERE\n    $timeFilter\n    and index1 = 'L0'\n    and ($colo = 'all' OR blob9 IN ($colo))\n    and toUInt32(double1) IN ($attempt)\n    and ($country = 'all' OR blob8 in ($country))\n    and ($renderingmode = 'all' OR blob3 in ($renderingmode))\n    and ($status = 'all' OR blob4 in ($status))\n    and ($source = 'all' OR blob5 in ($source))\n    and ($useragent = 'all' OR blob10 IN($useragent) OR length(blob10) = 0)\n    and toUInt32(double3) IN ($httpstatus)\nGROUP BY\n    t,\n    metric\nORDER BY t\n",
+          "rawQuery": "SELECT\n    (intDiv(toUInt32(timestamp), 300) * 300) * 1000 AS t,\n    format('count_{}', blob4) AS metric,\n    count()\nFROM ssr_cache_p1_v1\n\nWHERE\n    timestamp >= toDateTime(1689039579) AND timestamp <= toDateTime(1689082779)\n    and index1 = 'L0'\n    and ('all' = 'all' OR blob9 IN ('all'))\n    and toUInt32(double1) IN (0,1,2,3,4)\n    and ('ES' = 'all' OR blob8 in ('ES'))\n    and ('all' = 'all' OR blob3 in ('all'))\n    and ('all' = 'all' OR blob4 in ('all'))\n    and ('all' = 'all' OR blob5 in ('all'))\n    and ('all' = 'all' OR blob10 IN('all') OR length(blob10) = 0)\n    and toUInt32(double3) IN (200)\nGROUP BY\n    t,\n    metric\nORDER BY t",
+          "refId": "count",
+          "round": "0s",
+          "skip_comments": true
+        }
+      ],
+      "title": "Response time vS. Cache status time series",
+      "transformations": [
+        {
+          "id": "prepareTimeSeries",
+          "options": {
+            "format": "multi"
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 27
+      },
+      "id": 16,
+      "panels": [],
+      "title": "Handler ratio",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "vertamedia-clickhouse-datasource",
+        "uid": "${DS_WOW_SSR}"
+      },
+      "description": "Correlates average response time and count of requests",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 70,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "percent"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 0,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "count_L3"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "count_L2"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "count_L1"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 28
+      },
+      "hideTimeOverride": false,
+      "id": 10,
+      "interval": "300s",
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "vertamedia-clickhouse-datasource",
+            "uid": "${DS_WOW_SSR}"
+          },
+          "dateTimeColDataType": "timestamp",
+          "dateTimeType": "DATETIME",
+          "datetimeLoading": false,
+          "extrapolate": true,
+          "format": "time_series",
+          "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+          "hide": false,
+          "intervalFactor": 1,
+          "query": "SELECT\n    $timeSeries AS t,\n    format('count_{}', blob5) AS metric,\n    count()\nFROM ssr_cache_p1_v1\n\nWHERE\n    $timeFilter\n    and index1 = 'L0'\n    and ($colo = 'all' OR blob9 IN ($colo))\n    and toUInt32(double1) IN ($attempt)\n    and ($country = 'all' OR blob8 in ($country))\n    and ($renderingmode = 'all' OR blob3 in ($renderingmode))\n    and ($status = 'all' OR blob4 in ($status))\n    and ($source = 'all' OR blob5 in ($source))\n    and ($useragent = 'all' OR blob10 IN($useragent) OR length(blob10) = 0)\n    and toUInt32(double3) IN ($httpstatus)\nGROUP BY\n    t,\n    metric\nORDER BY metric desc\n",
+          "rawQuery": "SELECT\n    (intDiv(toUInt32(timestamp), 300) * 300) * 1000 AS t,\n    format('count_{}', blob5) AS metric,\n    count()\nFROM ssr_cache_p1_v1\n\nWHERE\n    timestamp >= toDateTime(1689039515) AND timestamp <= toDateTime(1689082715)\n    and index1 = 'L0'\n    and ('all' = 'all' OR blob9 IN ('all'))\n    and toUInt32(double1) IN (0,1,2,3,4)\n    and ('ES' = 'all' OR blob8 in ('ES'))\n    and ('all' = 'all' OR blob3 in ('all'))\n    and ('all' = 'all' OR blob4 in ('all'))\n    and ('all' = 'all' OR blob5 in ('all'))\n    and ('all' = 'all' OR blob10 IN('all') OR length(blob10) = 0)\n    and toUInt32(double3) IN (200)\nGROUP BY\n    t,\n    metric\nORDER BY metric desc",
+          "refId": "count",
+          "round": "0s",
+          "skip_comments": true
+        }
+      ],
+      "title": "Handler ratio",
+      "transformations": [
+        {
+          "id": "prepareTimeSeries",
+          "options": {
+            "format": "multi"
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "vertamedia-clickhouse-datasource",
+        "uid": "${DS_WOW_SSR}"
+      },
+      "description": "Correlates average response time and count of requests",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisGridShow": true,
+            "axisLabel": "Server response time (ms)",
+            "axisPlacement": "left",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "smooth",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 0.5,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 0,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/count_.*/"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "none"
+              },
+              {
+                "id": "custom.drawStyle",
+                "value": "bars"
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "right"
+              },
+              {
+                "id": "custom.stacking",
+                "value": {
+                  "group": "count",
+                  "mode": "normal"
+                }
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 85
+              },
+              {
+                "id": "custom.axisLabel",
+                "value": "Count"
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "duration_L3"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "duration_L1"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "duration_L2"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "count_L1"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "count_L2"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "count_L3"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 36
+      },
+      "hideTimeOverride": false,
+      "id": 9,
+      "interval": "300s",
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "asc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "vertamedia-clickhouse-datasource",
+            "uid": "${DS_WOW_SSR}"
+          },
+          "dateTimeColDataType": "timestamp",
+          "dateTimeType": "DATETIME",
+          "datetimeLoading": false,
+          "extrapolate": true,
+          "format": "time_series",
+          "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+          "hide": false,
+          "intervalFactor": 1,
+          "query": "SELECT\n    $timeSeries AS t,\n    format('duration_{}', blob5) AS metric,\n    SUM(_sample_interval * double2) / SUM(_sample_interval) AS value\nFROM ssr_cache_p1_v1\n\nWHERE\n    $timeFilter\n    and index1 = 'L0'\n    and ($colo = 'all' OR blob9 IN ($colo))\n    and toUInt32(double1) IN ($attempt)\n    and ($country = 'all' OR blob8 in ($country))\n    and ($renderingmode = 'all' OR blob3 in ($renderingmode))\n    and ($status = 'all' OR blob4 in ($status))\n    and ($source = 'all' OR blob5 in ($source))\n    and ($useragent = 'all' OR blob10 IN($useragent) OR length(blob10) = 0)\n    and toUInt32(double3) IN ($httpstatus)\nGROUP BY\n    t,\n    metric\nORDER BY t asc, metric desc\n",
+          "rawQuery": "SELECT\n    (intDiv(toUInt32(timestamp), 300) * 300) * 1000 AS t,\n    format('duration_{}', blob5) AS metric,\n    SUM(_sample_interval * double2) / SUM(_sample_interval) AS value\nFROM ssr_cache_p1_v1\n\nWHERE\n    timestamp >= toDateTime(1689039531) AND timestamp <= toDateTime(1689082731)\n    and index1 = 'L0'\n    and ('all' = 'all' OR blob9 IN ('all'))\n    and toUInt32(double1) IN (0,1,2,3,4)\n    and ('ES' = 'all' OR blob8 in ('ES'))\n    and ('all' = 'all' OR blob3 in ('all'))\n    and ('all' = 'all' OR blob4 in ('all'))\n    and ('all' = 'all' OR blob5 in ('all'))\n    and ('all' = 'all' OR blob10 IN('all') OR length(blob10) = 0)\n    and toUInt32(double3) IN (200)\nGROUP BY\n    t,\n    metric\nORDER BY t asc, metric desc",
+          "refId": "duration",
+          "round": "0s",
+          "skip_comments": true
+        },
+        {
+          "datasource": {
+            "type": "vertamedia-clickhouse-datasource",
+            "uid": "${DS_WOW_SSR}"
+          },
+          "dateTimeColDataType": "timestamp",
+          "dateTimeType": "DATETIME",
+          "datetimeLoading": false,
+          "extrapolate": true,
+          "format": "time_series",
+          "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+          "hide": false,
+          "intervalFactor": 1,
+          "query": "SELECT\n    $timeSeries AS t,\n    format('count_{}', blob5) AS metric,\n    count()\nFROM ssr_cache_p1_v1\n\nWHERE\n    $timeFilter\n    and index1 = 'L0'\n    and ($colo = 'all' OR blob9 IN ($colo))\n    and toUInt32(double1) IN ($attempt)\n    and ($country = 'all' OR blob8 in ($country))\n    and ($renderingmode = 'all' OR blob3 in ($renderingmode))\n    and ($status = 'all' OR blob4 in ($status))\n    and ($source = 'all' OR blob5 in ($source))\n    and ($useragent = 'all' OR blob10 IN($useragent) OR length(blob10) = 0)\n    and toUInt32(double3) IN ($httpstatus)\nGROUP BY\n    t,\n    metric\nORDER BY t asc, metric desc\n",
+          "rawQuery": "SELECT\n    (intDiv(toUInt32(timestamp), 300) * 300) * 1000 AS t,\n    format('count_{}', blob5) AS metric,\n    count()\nFROM ssr_cache_p1_v1\n\nWHERE\n    timestamp >= toDateTime(1689039531) AND timestamp <= toDateTime(1689082731)\n    and index1 = 'L0'\n    and ('all' = 'all' OR blob9 IN ('all'))\n    and toUInt32(double1) IN (0,1,2,3,4)\n    and ('ES' = 'all' OR blob8 in ('ES'))\n    and ('all' = 'all' OR blob3 in ('all'))\n    and ('all' = 'all' OR blob4 in ('all'))\n    and ('all' = 'all' OR blob5 in ('all'))\n    and ('all' = 'all' OR blob10 IN('all') OR length(blob10) = 0)\n    and toUInt32(double3) IN (200)\nGROUP BY\n    t,\n    metric\nORDER BY t asc, metric desc",
+          "refId": "count",
+          "round": "0s",
+          "skip_comments": true
+        }
+      ],
+      "title": "Response time vS. Cache source time series",
+      "transformations": [
+        {
+          "id": "prepareTimeSeries",
+          "options": {
+            "format": "multi"
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 44
+      },
+      "id": 17,
+      "panels": [],
+      "title": "Details",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "vertamedia-clickhouse-datasource",
+        "uid": "${DS_WOW_SSR}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "inspect": false,
+            "minWidth": 50
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Time"
+            },
+            "properties": [
+              {
+                "id": "custom.width"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 21,
+        "w": 24,
+        "x": 0,
+        "y": 45
+      },
+      "id": 13,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "enablePagination": true,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "frameIndex": 4,
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "10.0.2-cloud.1.94a6f396",
+      "targets": [
+        {
+          "datasource": {
+            "type": "vertamedia-clickhouse-datasource",
+            "uid": "${DS_WOW_SSR}"
+          },
+          "dateTimeColDataType": "timestamp",
+          "dateTimeType": "DATETIME",
+          "datetimeLoading": false,
+          "extrapolate": true,
+          "format": "table",
+          "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+          "intervalFactor": 1,
+          "query": "SELECT\n    timestamp,\n    index1 AS handler,\n    blob1 AS cf_ray,\n    blob2 AS url,\n    blob3 AS rendering_mode,\n    blob4 AS cf_cache_status,\n    blob5 as cf_cache_source,\n    blob6 as city,\n    blob7 as region,\n    blob8 as country,\n    blob9 as colo,\n    blob10 as user_agent,\n    double3 as http_status,\n    double1 as attempt,\n    double2 as duration\nFROM ssr_cache_p1_v1\nWHERE\n    $timeFilter \n    and index1 = 'L0'\n    and($colo = 'all' OR blob9 IN ($colo))\n    and toUInt32(double1) IN ($attempt)\n    and($country = 'all' OR blob8 in ($country))\n    and($renderingmode = 'all' OR blob3 in ($renderingmode))\n    and($status = 'all' OR blob4 in ($status))\n    and($source = 'all' OR blob5 in ($source))\n    and($useragent = 'all' OR blob10 IN ($useragent) OR length(blob10) = 0)\n    and toUInt32(double3) IN ($httpstatus)\nORDER BY\n    timestamp DESC,\n    cf_ray ASC,\n    handler ASC",
+          "rawQuery": "SELECT\n    timestamp,\n    index1 AS handler,\n    blob1 AS cf_ray,\n    blob2 AS url,\n    blob3 AS rendering_mode,\n    blob4 AS cf_cache_status,\n    blob5 as cf_cache_source,\n    blob6 as city,\n    blob7 as region,\n    blob8 as country,\n    blob9 as colo,\n    blob10 as user_agent,\n    double3 as http_status,\n    double1 as attempt,\n    double2 as duration\nFROM ssr_cache_p1_v1\nWHERE\n    timestamp >= toDateTime(1689039624) AND timestamp <= toDateTime(1689082824) \n    and index1 = 'L0'\n    and('all' = 'all' OR blob9 IN ('all'))\n    and toUInt32(double1) IN (0,1,2,3,4)\n    and('ES' = 'all' OR blob8 in ('ES'))\n    and('all' = 'all' OR blob3 in ('all'))\n    and('all' = 'all' OR blob4 in ('all'))\n    and('all' = 'all' OR blob5 in ('all'))\n    and('all' = 'all' OR blob10 IN ('all') OR length(blob10) = 0)\n    and toUInt32(double3) IN (0,200,206,304)\nORDER BY\n    timestamp DESC,\n    cf_ray ASC,\n    handler ASC",
+          "refId": "A",
+          "round": "0s",
+          "skip_comments": true
+        }
+      ],
+      "title": "Requests",
+      "type": "table"
+    }
+  ],
+  "refresh": "15m",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": [
+    "ssr",
+    "wow",
+    "cloudflare",
+    "cache"
+  ],
+  "templating": {
+    "list": [
+      {
+        "allValue": "'all'",
+        "current": {},
+        "datasource": {
+          "type": "vertamedia-clickhouse-datasource",
+          "uid": "${DS_WOW_SSR}"
+        },
+        "definition": "SELECT rendering_mode FROM (\nSELECT\n     blob3 AS rendering_mode,\n     count() as rank\nFROM ssr_cache_p1_v1\nWHERE LENGTH(rendering_mode) > 0\nGROUP BY rendering_mode\norder by rendering_mode asc\n)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "rendering mode",
+        "multi": true,
+        "name": "renderingmode",
+        "options": [],
+        "query": "SELECT rendering_mode FROM (\nSELECT\n     blob3 AS rendering_mode,\n     count() as rank\nFROM ssr_cache_p1_v1\nWHERE LENGTH(rendering_mode) > 0\nGROUP BY rendering_mode\norder by rendering_mode asc\n)",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "allValue": "'all'",
+        "current": {},
+        "datasource": {
+          "type": "vertamedia-clickhouse-datasource",
+          "uid": "${DS_WOW_SSR}"
+        },
+        "definition": "SELECT cf_cache_status FROM (\nSELECT\n     blob4 AS cf_cache_status,\n     count() as rank\nFROM ssr_cache_p1_v1\nWHERE LENGTH(cf_cache_status) > 0\nGROUP BY cf_cache_status\norder by cf_cache_status asc\n)",
+        "description": "CF cache status",
+        "hide": 0,
+        "includeAll": true,
+        "label": "status",
+        "multi": true,
+        "name": "status",
+        "options": [],
+        "query": "SELECT cf_cache_status FROM (\nSELECT\n     blob4 AS cf_cache_status,\n     count() as rank\nFROM ssr_cache_p1_v1\nWHERE LENGTH(cf_cache_status) > 0\nGROUP BY cf_cache_status\norder by cf_cache_status asc\n)",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "allValue": "'all'",
+        "current": {},
+        "datasource": {
+          "type": "vertamedia-clickhouse-datasource",
+          "uid": "${DS_WOW_SSR}"
+        },
+        "definition": "SELECT cf_cache_source FROM (\nSELECT\n     blob5 AS cf_cache_source,\n     count() as rank\nFROM ssr_cache_p1_v1\nWHERE LENGTH(cf_cache_source) > 0\nGROUP BY cf_cache_source\norder by cf_cache_source asc\n)",
+        "description": "Cache level where the resoure was found",
+        "hide": 0,
+        "includeAll": true,
+        "label": "source",
+        "multi": true,
+        "name": "source",
+        "options": [],
+        "query": "SELECT cf_cache_source FROM (\nSELECT\n     blob5 AS cf_cache_source,\n     count() as rank\nFROM ssr_cache_p1_v1\nWHERE LENGTH(cf_cache_source) > 0\nGROUP BY cf_cache_source\norder by cf_cache_source asc\n)",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "allValue": "'all'",
+        "current": {},
+        "datasource": {
+          "type": "vertamedia-clickhouse-datasource",
+          "uid": "${DS_WOW_SSR}"
+        },
+        "definition": "SELECT country FROM (\nSELECT\n     blob8 AS country,\n     count()\nFROM ssr_cache_p1_v1\nWHERE LENGTH(country) > 0\nGROUP BY country\norder by country asc\n)",
+        "description": "The country where the request was triggered from",
+        "hide": 0,
+        "includeAll": true,
+        "label": "country",
+        "multi": true,
+        "name": "country",
+        "options": [],
+        "query": "SELECT country FROM (\nSELECT\n     blob8 AS country,\n     count()\nFROM ssr_cache_p1_v1\nWHERE LENGTH(country) > 0\nGROUP BY country\norder by country asc\n)",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "allValue": "'all'",
+        "current": {},
+        "datasource": {
+          "type": "vertamedia-clickhouse-datasource",
+          "uid": "${DS_WOW_SSR}"
+        },
+        "definition": "SELECT useragent FROM (\nSELECT\n     blob10 AS useragent,\n     count()\nFROM ssr_cache_p1_v1\nWHERE length(blob10) > 0\nGROUP BY useragent\norder by useragent asc\n)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "user-agent",
+        "multi": true,
+        "name": "useragent",
+        "options": [],
+        "query": "SELECT useragent FROM (\nSELECT\n     blob10 AS useragent,\n     count()\nFROM ssr_cache_p1_v1\nWHERE length(blob10) > 0\nGROUP BY useragent\norder by useragent asc\n)",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "allValue": "'all'",
+        "current": {},
+        "datasource": {
+          "type": "vertamedia-clickhouse-datasource",
+          "uid": "${DS_WOW_SSR}"
+        },
+        "definition": "SELECT colo FROM (\nSELECT\n     blob9 AS colo,\n     count() as rank\nFROM ssr_cache_p1_v1\nWHERE length(colo) > 0\nGROUP BY colo\norder by colo asc\n)",
+        "description": "Cloudflare colo",
+        "hide": 0,
+        "includeAll": true,
+        "label": "colo",
+        "multi": false,
+        "name": "colo",
+        "options": [],
+        "query": "SELECT colo FROM (\nSELECT\n     blob9 AS colo,\n     count() as rank\nFROM ssr_cache_p1_v1\nWHERE length(colo) > 0\nGROUP BY colo\norder by colo asc\n)",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "allValue": "",
+        "current": {},
+        "datasource": {
+          "type": "vertamedia-clickhouse-datasource",
+          "uid": "${DS_WOW_SSR}"
+        },
+        "definition": "SELECT attempt FROM (\nSELECT\n     double1 AS attempt,\n     count()\nFROM ssr_cache_p1_v1\nGROUP BY attempt\norder by attempt asc\n)",
+        "description": "Attempt 0 is what user agent receives.\nAttempts greater than 1 are in background",
+        "hide": 0,
+        "includeAll": true,
+        "label": "attempt",
+        "multi": true,
+        "name": "attempt",
+        "options": [],
+        "query": "SELECT attempt FROM (\nSELECT\n     double1 AS attempt,\n     count()\nFROM ssr_cache_p1_v1\nGROUP BY attempt\norder by attempt asc\n)",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "allValue": "",
+        "current": {},
+        "datasource": {
+          "type": "vertamedia-clickhouse-datasource",
+          "uid": "${DS_WOW_SSR}"
+        },
+        "definition": "SELECT http_status FROM (\nSELECT\n     double3 AS http_status,\n     count()\nFROM ssr_cache_p1_v1\nGROUP BY http_status\norder by http_status asc\n)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "http status",
+        "multi": true,
+        "name": "httpstatus",
+        "options": [],
+        "query": "SELECT http_status FROM (\nSELECT\n     double3 AS http_status,\n     count()\nFROM ssr_cache_p1_v1\nGROUP BY http_status\norder by http_status asc\n)",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "WoW SSR",
+  "uid": "b3cd0ee6-d855-4df9-955e-ceafaed475a4",
+  "version": 127,
+  "weekStart": "monday"
+}
