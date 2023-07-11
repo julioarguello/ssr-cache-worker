@@ -91,6 +91,23 @@
 			"response": []
 		},
 		{
+			"name": "T3",
+			"id": "aaf44e98-a002-495a-9f39-4511ffe9a951",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "SELECT\n    timestamp,\n    index1 as handler,\n    blob4 AS cf_cache_status,\n    blob1 AS cf_ray,\n    blob3 AS rendering_mode,\n    blob5 AS cf_cache_source,\n    blob9 AS colo,\n    double1 AS attempt,\n    double2 AS duration\nFROM {{datasetId}}\nWHERE timestamp > NOW() - INTERVAL '1' HOUR AND\n    position('LAC2SNE33734PCM001' IN blob2) > 0\nORDER BY timestamp ASC, cf_ray ASC, handler ASC\nFORMAT JSONEachRow"
+				},
+				"url": "{{baseUrl}}/client/v4/accounts/{{accountId}}/analytics_engine/sql"
+			},
+			"response": []
+		},
+		{
 			"name": "L3 status by interval",
 			"id": "3152295b-4aca-46e1-b583-9b025142ee39",
 			"protocolProfileBehavior": {
