@@ -101,7 +101,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "SELECT\n    timestamp,\n    index1 as handler,\n    blob4 AS cf_cache_status,\n    blob1 AS cf_ray,\n    blob3 AS rendering_mode,\n    blob5 AS cf_cache_source,\n    blob9 AS colo,\n    double1 AS attempt,\n    double2 AS duration\nFROM {{datasetId}}\nWHERE timestamp > NOW() - INTERVAL '1' HOUR AND\n    position('LAC2SNE33734PCM001' IN blob2) > 0\nORDER BY timestamp ASC, cf_ray ASC, handler ASC\nFORMAT JSONEachRow"
+					"raw": "SELECT\n    *\nFROM {{datasetId}}\nWHERE timestamp > NOW() - INTERVAL '1' DAY\nORDER BY timestamp DESC\nFORMAT JSONEachRow"
 				},
 				"url": "{{baseUrl}}/client/v4/accounts/{{accountId}}/analytics_engine/sql"
 			},
