@@ -135,7 +135,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "SELECT\n    intDiv(toUInt32(timestamp), 300) * 300 AS t,     \n    blob3 AS rendering_mode,  \n    blob4 AS cf_cache_status,\n    blob5 as cf_cache_source,\n    SUM(_sample_interval * double2) / SUM(_sample_interval) AS avg_duration\nFROM {{datasetId}}\nWHERE timestamp > NOW() - INTERVAL '1' DAY\nGROUP BY rendering_mode, t, cf_cache_source, cf_cache_status\nORDER BY t\nFORMAT JSONEachRow"
+					"raw": "SELECT\n    intDiv(toUInt32(timestamp), 300) * 300 AS t,     \n    blob3 AS rendering_mode,  \n    blob4 AS cf_cache_status,\n    blob5 as cf_cache_source,\n    blob9 AS colo,\n    double1 AS attempt,\n    SUM(_sample_interval * double2) / SUM(_sample_interval) AS avg_duration\nFROM {{datasetId}}\nWHERE timestamp > NOW() - INTERVAL '1' DAY\nGROUP BY t, rendering_mode, cf_cache_status, cf_cache_source, colo, attempt\nORDER BY t\nFORMAT JSONEachRow"
 				},
 				"url": "{{baseUrl}}/client/v4/accounts/{{accountId}}/analytics_engine/sql"
 			},
