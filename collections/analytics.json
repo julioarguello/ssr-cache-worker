@@ -50,7 +50,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "SELECT\n    timestamp,\n    index1 AS handler,\n    blob1 AS cf_ray,\n    blob2 AS url,\n    blob3 AS rendering_mode,\n    blob4 AS cf_cache_status,\n    blob5 as cf_cache_source,\n    blob6 as city,\n    blob7 as region,\n    blob8 as country,\n    blob9 as colo,\n    blob10 as user_agent,\n    double1 as attempt,\n    double2 as duration\nFROM {{datasetId}}\nWHERE timestamp > NOW() - INTERVAL '1' DAY\nORDER BY timestamp\nFORMAT JSONEachRow"
+					"raw": "SELECT\n    timestamp,\n    index1 AS handler,\n    blob1 AS cf_ray,\n    blob2 AS url,\n    blob3 AS rendering_mode,\n    blob4 AS cf_cache_status,\n    blob5 as cf_cache_source,\n    blob6 as city,\n    blob7 as region,\n    blob8 as country,\n    blob9 as colo,\n    blob10 as user_agent,\n    double1 as attempt,\n    double2 as duration\nFROM {{datasetId}}\nWHERE \ntimestamp > NOW() - INTERVAL '1' HOUR \nORDER BY timestamp DESC, cf_ray ASC, handler ASC\nFORMAT JSONEachRow"
 				},
 				"url": "{{baseUrl}}/client/v4/accounts/{{accountId}}/analytics_engine/sql"
 			},
