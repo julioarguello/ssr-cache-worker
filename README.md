@@ -312,7 +312,7 @@ FORMAT JSONEachRow
 
 #### [Grafana Dashboard](https://julioarguello.grafana.net/goto/JEKyK7C4g?orgId=1)
 
-> An up-to-date export of the Grafana dashboard is available at [repository](https://github.com/julioarguello/repo/blob/main/monitoring/grafana/WoW%20SSR-1689082912235.json).
+> An up-to-date export of the Grafana dashboard is available at [repository](https://github.com/julioarguello/ssr-cache-worker/blob/main/monitoring/grafana/WoW%20SSR-1689082912235.json).
 
 
 ##### Filters
