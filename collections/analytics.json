@@ -101,7 +101,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "SELECT\n    *\nFROM {{datasetId}}\nWHERE timestamp > NOW() - INTERVAL '1' DAY\nORDER BY timestamp DESC\nFORMAT JSONEachRow"
+					"raw": "SELECT\n    double1 AS attempt,\n    count() AS value\nFROM ssr_cache_p1_v1\n\nWHERE\n    timestamp >= toDateTime(1688972456) AND timestamp <= toDateTime(1689075548)\n    and ('all' = 'all' OR blob9 IN ('all'))\n    and toUInt32(double1) IN (0,1,2,3,4)\n    and ('ES' = 'all' OR blob8 in ('ES'))\n    and ('all' = 'all' OR blob3 in ('all'))\n    and ('all' = 'all' OR blob4 in ('all'))\n    and ('all' = 'all' OR blob5 in ('all'))\n    and ('all' = 'all' OR blob10 IN('all') OR length(blob10) = 0)\nGROUP BY attempt\n\nORDER BY value DESC\nFORMAT JSONEachRow"
 				},
 				"url": "{{baseUrl}}/client/v4/accounts/{{accountId}}/analytics_engine/sql"
 			},
