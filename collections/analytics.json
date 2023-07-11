@@ -67,7 +67,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "SELECT\n    timestamp,\n    index1 as handler,\n    blob4 AS cf_cache_status,\n    blob1 AS cf_ray,\n    blob3 AS rendering_mode,\n    blob5 AS cf_cache_source,\n    blob9 AS colo,\n    double1 AS attempt,\n    double2 AS duration\nFROM {{datasetId}}\nWHERE timestamp > NOW() - INTERVAL '1' HOUR AND\n    position('LAC2SNE33734PCM001' IN blob2) > 0\nORDER BY timestamp ASC, cf_ray ASC, handler ASC\nFORMAT JSONEachRow"
+					"raw": "SELECT\n    timestamp,\n    index1 as handler,\n    blob4 AS cf_cache_status,\n    blob1 AS cf_ray,\n    blob3 AS rendering_mode,\n    blob5 AS cf_cache_source,\n    blob9 AS colo,\n    blob2 AS url,\n    double1 AS attempt,\n    double2 AS duration\nFROM {{datasetId}}\nWHERE \ntimestamp > NOW() - INTERVAL '1' HOUR \n--    position('LAC2SNE33734PCM001' IN blob2) > 0 \n--    AND timestamp > toDateTime('2023-07-07 09:16:35')\n--    AND timestamp < toDateTime('2023-07-07 09:04:48')\nORDER BY timestamp DESC, cf_ray ASC, handler ASC\nFORMAT JSONEachRow"
 				},
 				"url": "{{baseUrl}}/client/v4/accounts/{{accountId}}/analytics_engine/sql"
 			},
