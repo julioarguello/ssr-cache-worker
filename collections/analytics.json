@@ -74,7 +74,7 @@
 			"response": []
 		},
 		{
-			"name": "Select Records by Interval and URL Copy",
+			"name": "T2",
 			"id": "dc9128ae-2a1d-413c-944f-e79dfe7ea3ef",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
